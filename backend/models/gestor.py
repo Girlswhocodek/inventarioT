@@ -1,4 +1,3 @@
-cat > backend/models/gestor.py << 'EOL'
 from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -20,4 +19,3 @@ class Gestor(Base):
     
     # Relación con la base de datos
     base_datos = relationship("BaseDatos", backref="gestores")
-EOL
