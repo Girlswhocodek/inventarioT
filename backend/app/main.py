@@ -1,4 +1,3 @@
-cat > backend/app/main.py << 'EOL'
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
@@ -134,4 +133,3 @@ async def obtener_kpis(db: Session = Depends(get_db)):
         "total_sistemas_operativos": db.query(SistemaOperativo).count(),
         "total_gestores": db.query(Gestor).count()
     }
-EOL
