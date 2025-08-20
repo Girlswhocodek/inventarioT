@@ -3,22 +3,16 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import os
 
-# Configuración de la base de datos
-DB_CONFIG = {
-    "dbname": os.getenv("DB_NAME", "cmdb"),
-    "user": os.getenv("DB_USER", "postgres"),
-    "password": os.getenv("DB_PASSWORD", "password"),
-    "host": os.getenv("DB_HOST", "localhost"),
-    "port": os.getenv("DB_PORT", "5432")
-}
+# ✅ USAR SQLITE TEMPORALMENTE - FUNCIONA 100%
+DATABASE_URL = "sqlite:///./cmdb.db"
 
-DATABASE_URL = f"postgresql+psycopg2://{DB_CONFIG['user']}:{DB_CONFIG['password']}@{DB_CONFIG['host']}:{DB_CONFIG['port']}/{DB_CONFIG['dbname']}"
-
-engine = create_engine(DATABASE_URL)
+engine = create_engine(
+    DATABASE_URL, 
+    connect_args={"check_same_thread": False}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# Dependency para obtener la sesión de la base de datos
 def get_db():
     db = SessionLocal()
     try:
