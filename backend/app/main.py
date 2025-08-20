@@ -1,16 +1,19 @@
+cat > backend/app/main.py << 'EOL'
 from fastapi import FastAPI, Depends, HTTPException
 from sqlalchemy.orm import Session
 from typing import List
+import json
 
-# Importaciones propias
-from models.base import Base, engine, get_db
-from models.configuration_item import ConfigurationItemDB
-from schemas.configuration_item import ConfigurationItem, ConfigurationItemCreate
-from crud.configuration_item import get_configuration_items, get_configuration_item, create_configuration_item
+# Importar todos los modelos
+from models import Base, engine, get_db
+from models.servidor import Servidor
+from models.sistema_operativo import SistemaOperativo
+from models.base_datos import BaseDatos
+from models.gestor import Gestor
 
 app = FastAPI(
-    title="CMDB Inventory API - SQLAlchemy + PostgreSQL",
-    description="Sistema profesional con ORM y base de datos real",
+    title="InventarioT API",
+    description="Sistema de inventario por 4 niveles: Servidores → SO → BD → Gestores",
     version="1.0.0"
 )
 
@@ -22,37 +25,113 @@ def startup_event():
 @app.get("/")
 async def root():
     return {
-        "message": "✅ CMDB con SQLAlchemy + PostgreSQL funcionando!",
-        "orm": "SQLAlchemy 2.0",
-        "database": "PostgreSQL"
+        "message": "✅ InventarioT API funcionando",
+        "niveles": {
+            "1": "Servidores",
+            "2": "Sistemas Operativos", 
+            "3": "Bases de Datos",
+            "4": "Gestores"
+        },
+        "endpoints": {
+            "servidores": "/servidores",
+            "sistemas_operativos": "/sistemas-operativos", 
+            "bases_datos": "/bases-datos",
+            "gestores": "/gestores"
+        }
     }
 
-@app.get("/items", response_model=List[ConfigurationItem])
-async def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    items = get_configuration_items(db, skip=skip, limit=limit)
-    return items
+# ========== NIVEL 1: SERVIDORES ==========
+@app.get("/servidores", response_model=List[dict])
+async def listar_servidores(db: Session = Depends(get_db)):
+    servidores = db.query(Servidor).all()
+    return [{
+        "id": s.id,
+        "nombre": s.nombre,
+        "ip": s.ip,
+        "cpu_nucleos": s.cpu_nucleos,
+        "ram_gb": s.ram_gb,
+        "almacenamiento_gb": s.almacenamiento_gb,
+        "estado": s.estado,
+        "responsable": s.responsable,
+        "fecha_creacion": s.fecha_creacion
+    } for s in servidores]
 
-@app.get("/items/{item_id}", response_model=ConfigurationItem)
-async def read_item(item_id: int, db: Session = Depends(get_db)):
-    db_item = get_configuration_item(db, item_id=item_id)
-    if db_item is None:
-        raise HTTPException(status_code=404, detail="Item not found")
-    return db_item
+# ========== NIVEL 2: SISTEMAS OPERATIVOS ==========
+@app.get("/sistemas-operativos", response_model=List[dict])
+async def listar_sistemas_operativos(db: Session = Depends(get_db)):
+    sistemas = db.query(SistemaOperativo).all()
+    return [{
+        "id": so.id,
+        "nombre": so.nombre,
+        "distribucion": so.distribucion,
+        "version": so.version,
+        "fecha_creacion": so.fecha_creacion,
+        "tipo_usuario": so.tipo_usuario,
+        "permisos": json.loads(so.permisos) if so.permisos else {},
+        "servidor_id": so.servidor_id
+    } for so in sistemas]
 
-@app.post("/items", response_model=ConfigurationItem)
-async def create_item(item: ConfigurationItemCreate, db: Session = Depends(get_db)):
-    return create_configuration_item(db=db, item=item)
+# ========== NIVEL 3: BASES DE DATOS ==========
+@app.get("/bases-datos", response_model=List[dict])
+async def listar_bases_datos(db: Session = Depends(get_db)):
+    bases = db.query(BaseDatos).all()
+    return [{
+        "id": bd.id,
+        "nombre": bd.nombre,
+        "motor": bd.motor,
+        "version": bd.version,
+        "fecha_inicio": bd.fecha_inicio,
+        "responsable": bd.responsable,
+        "espacio_gb": bd.espacio_gb,
+        "objetos": bd.objetos,
+        "puerto": bd.puerto,
+        "estado": bd.estado,
+        "sistema_operativo_id": bd.sistema_operativo_id
+    } for bd in bases]
 
-# Health check endpoint
+# ========== NIVEL 4: GESTORES ==========
+@app.get("/gestores", response_model=List[dict])
+async def listar_gestores(db: Session = Depends(get_db)):
+    gestores = db.query(Gestor).all()
+    return [{
+        "id": g.id,
+        "nombre": g.nombre,
+        "tipo": g.tipo,
+        "version": g.version,
+        "permisos_asignados": json.loads(g.permisos_asignados) if g.permisos_asignados else {},
+        "configuracion": json.loads(g.configuracion) if g.configuracion else {},
+        "url_acceso": g.url_acceso,
+        "estado": g.estado,
+        "base_datos_id": g.base_datos_id
+    } for g in gestores]
+
+# Health check
 @app.get("/health")
 async def health_check(db: Session = Depends(get_db)):
     try:
-        # Test database connection
         db.execute("SELECT 1")
         return {
-            "status": "healthy",
-            "database": "connected",
-            "orm": "sqlalchemy"
+            "status": "healthy", 
+            "database": "inventario.db",
+            "tablas_creadas": True,
+            "niveles": 4
         }
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+
+# KPIs para dashboard
+@app.get("/kpis")
+async def obtener_kpis(db: Session = Depends(get_db)):
+    total_servidores = db.query(Servidor).count()
+    servidores_activos = db.query(Servidor).filter(Servidor.estado == "activo").count()
+    total_bases_datos = db.query(BaseDatos).count()
+    
+    return {
+        "total_servidores": total_servidores,
+        "servidores_activos": servidores_activos,
+        "servidores_inactivos": total_servidores - servidores_activos,
+        "total_bases_datos": total_bases_datos,
+        "total_sistemas_operativos": db.query(SistemaOperativo).count(),
+        "total_gestores": db.query(Gestor).count()
+    }
+EOL
