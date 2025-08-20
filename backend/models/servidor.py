@@ -1,4 +1,3 @@
-cat > backend/models/servidor.py << 'EOL'
 from sqlalchemy import Column, Integer, String, DateTime
 from sqlalchemy.sql import func
 from .base import Base
@@ -16,4 +15,3 @@ class Servidor(Base):
     responsable = Column(String(100))
     fecha_creacion = Column(DateTime, default=func.now())
     fecha_actualizacion = Column(DateTime, default=func.now(), onupdate=func.now())
-EOL
