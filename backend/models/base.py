@@ -3,7 +3,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy import create_engine
 import os
 
-# ✅ USAR SQLITE TEMPORALMENTE - FUNCIONA 100%
+
 DATABASE_URL = "sqlite:///./cmdb.db"
 
 engine = create_engine(
