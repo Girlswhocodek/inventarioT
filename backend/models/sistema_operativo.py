@@ -1,4 +1,3 @@
-cat > backend/models/sistema_operativo.py << 'EOL'
 from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -20,4 +19,3 @@ class SistemaOperativo(Base):
     
     # Relación con el servidor
     servidor = relationship("Servidor", backref="sistemas_operativos")
-EOL
