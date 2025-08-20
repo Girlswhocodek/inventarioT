@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>InventarioT - Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 5px; margin-bottom: 20px; }
+        .search-bar { padding: 15px; background: white; border-radius: 5px; margin-bottom: 20px; }
+        .search-input { width: 70%; padding: 10px; font-size: 16px; }
+        .search-btn { padding: 10px 20px; background: #3498db; color: white; border: none; cursor: pointer; }
+        .dashboard { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .kpi-card { background: white; padding: 20px; border-radius: 5px; text-align: center; }
+        .kpi-value { font-size: 24px; font-weight: bold; color: #2c3e50; }
+        .results { margin-top: 20px; }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
+        th { background: #f8f9fa; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🏢 InventarioT - CMDB</h1>
+            <p>Sistema de Gestión de Activos de TI</p>
+        </div>
+
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="🔍 Buscar por nombre, IP, tipo, responsable..." id="searchInput">
+            <button class="search-btn" onclick="buscar()">Buscar</button>
+            <select id="nivelFilter" onchange="filtrarPorNivel()">
+                <option value="">Todos los niveles</option>
+                <option value="servidores">Servidores</option>
+                <option value="sistemas-operativos">Sistemas Operativos</option>
+                <option value="bases-datos">Bases de Datos</option>
+                <option value="gestores">Gestores</option>
+            </select>
+        </div>
+
+        <div class="dashboard">
+            <div class="kpi-card">
+                <h3>Total Servidores</h3>
+                <div class="kpi-value" id="totalServidores">0</div>
+            </div>
+            <div class="kpi-card">
+                <h3>Servidores Activos</h3>
+                <div class="kpi-value" id="servidoresActivos">0</div>
+            </div>
+            <div class="kpi-card">
+                <h3>Total Bases Datos</h3>
+                <div class="kpi-value" id="totalBasesDatos">0</div>
+            </div>
+        </div>
+
+        <div class="results">
+            <h2>Resultados de Búsqueda</h2>
+            <div id="resultados"></div>
+        </div>
+    </div>
+
+    <script>
+        // Cargar KPIs al iniciar
+        fetch('/kpis')
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('totalServidores').textContent = data.total_servidores;
+                document.getElementById('servidoresActivos').textContent = data.servidores_activos;
+                document.getElementById('totalBasesDatos').textContent = data.total_bases_datos;
+            });
+
+        function buscar() {
+            const query = document.getElementById('searchInput').value;
+            const nivel = document.getElementById('nivelFilter').value;
+            
+            let url = '/buscar?q=' + encodeURIComponent(query);
+            if (nivel) url += '&nivel=' + nivel;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => mostrarResultados(data));
+        }
+
+        function filtrarPorNivel() {
+            buscar();
+        }
+
+        function mostrarResultados(data) {
+            const resultadosDiv = document.getElementById('resultados');
+            resultadosDiv.innerHTML = '';
+
+            if (data.servidores && data.servidores.length > 0) {
+                resultadosDiv.innerHTML += '<h3>Servidores</h3>' + crearTabla(data.servidores, ['nombre', 'ip', 'estado', 'responsable']);
+            }
+            if (data.sistemas_operativos && data.sistemas_operativos.length > 0) {
+                resultadosDiv.innerHTML += '<h3>Sistemas Operativos</h3>' + crearTabla(data.sistemas_operativos, ['nombre', 'distribucion', 'version']);
+            }
+            if (data.bases_datos && data.bases_datos.length > 0) {
+                resultadosDiv.innerHTML += '<h3>Bases de Datos</h3>' + crearTabla(data.bases_datos, ['nombre', 'motor', 'responsable', 'espacio_gb']);
+            }
+            if (data.gestores && data.gestores.length > 0) {
+                resultadosDiv.innerHTML += '<h3>Gestores</h3>' + crearTabla(data.gestores, ['nombre', 'tipo', 'version']);
+            }
+        }
+
+        function crearTabla(items, campos) {
+            let html = '<table><tr>';
+            campos.forEach(campo => html += '<th>' + campo.replace('_', ' ').toUpperCase() + '</th>');
+            html += '</tr>';
+            
+            items.forEach(item => {
+                html += '<tr>';
+                campos.forEach(campo => html += '<td>' + (item[campo] || 'N/A') + '</td>');
+                html += '</tr>';
+            });
+            
+            return html + '</table>';
+        }
+    </script>
+</body>
+</html>
