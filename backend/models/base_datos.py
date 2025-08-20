@@ -1,4 +1,3 @@
-cat > backend/models/base_datos.py << 'EOL'
 from sqlalchemy import Column, Integer, String, DateTime, Float, ForeignKey
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
@@ -22,4 +21,3 @@ class BaseDatos(Base):
     
     # Relación con el sistema operativo
     sistema_operativo = relationship("SistemaOperativo", backref="bases_datos")
-EOL
