@@ -1,4 +1,3 @@
-cat > backend/models/__init__.py << 'EOL'
 from .base import Base, engine, get_db
 from .servidor import Servidor
 from .sistema_operativo import SistemaOperativo
