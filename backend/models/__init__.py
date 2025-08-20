@@ -1,0 +1,8 @@
+cat > backend/models/__init__.py << 'EOL'
+from .base import Base, engine, get_db
+from .servidor import Servidor
+from .sistema_operativo import SistemaOperativo
+
+# Importar todos los modelos para que SQLAlchemy los detecte
+__all__ = ['Base', 'engine', 'get_db', 'Servidor', 'SistemaOperativo']
+EOL
