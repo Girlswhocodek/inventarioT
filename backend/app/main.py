@@ -1,69 +1,58 @@
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
+from fastapi import FastAPI, Depends, HTTPException
+from sqlalchemy.orm import Session
 from typing import List
-import pandas as pd
-import sqlite3
-import json
 
-app = FastAPI(title="CMDB Inventory API")
+# Importaciones propias
+from models.base import Base, engine, get_db
+from models.configuration_item import ConfigurationItemDB
+from schemas.configuration_item import ConfigurationItem, ConfigurationItemCreate
+from crud.configuration_item import get_configuration_items, get_configuration_item, create_configuration_item
 
-class ConfigurationItem(BaseModel):
-    id: int = None
-    name: str
-    type: str
-    attributes: dict = {}
+app = FastAPI(
+    title="CMDB Inventory API - SQLAlchemy + PostgreSQL",
+    description="Sistema profesional con ORM y base de datos real",
+    version="1.0.0"
+)
 
-# Base de datos temporal (luego cambiamos a PostgreSQL)
-DB_PATH = "/tmp/cmdb.db"
-
-def init_db():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute('''
-        CREATE TABLE IF NOT EXISTS configuration_items (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            name TEXT NOT NULL,
-            type TEXT NOT NULL,
-            attributes TEXT
-        )
-    ''')
-    conn.commit()
-    conn.close()
+# Crear tablas al iniciar
+@app.on_event("startup")
+def startup_event():
+    Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 async def root():
-    return {"message": "✅ CMDB Inventory API Running!", "status": "active"}
+    return {
+        "message": "✅ CMDB con SQLAlchemy + PostgreSQL funcionando!",
+        "orm": "SQLAlchemy 2.0",
+        "database": "PostgreSQL"
+    }
 
 @app.get("/items", response_model=List[ConfigurationItem])
-async def get_all_items():
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM configuration_items")
-    items = cursor.fetchall()
-    conn.close()
-    
-    return [
-        ConfigurationItem(
-            id=item[0],
-            name=item[1],
-            type=item[2],
-            attributes=json.loads(item[3]) if item[3] else {}
-        ) for item in items
-    ]
+async def read_items(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+    items = get_configuration_items(db, skip=skip, limit=limit)
+    return items
+
+@app.get("/items/{item_id}", response_model=ConfigurationItem)
+async def read_item(item_id: int, db: Session = Depends(get_db)):
+    db_item = get_configuration_item(db, item_id=item_id)
+    if db_item is None:
+        raise HTTPException(status_code=404, detail="Item not found")
+    return db_item
 
 @app.post("/items", response_model=ConfigurationItem)
-async def create_item(item: ConfigurationItem):
-    conn = sqlite3.connect(DB_PATH)
-    cursor = conn.cursor()
-    cursor.execute(
-        "INSERT INTO configuration_items (name, type, attributes) VALUES (?, ?, ?)",
-        (item.name, item.type, json.dumps(item.attributes))
-    )
-    conn.commit()
-    item_id = cursor.lastrowid
-    conn.close()
-    
-    return {**item.dict(), "id": item_id}
+async def create_item(item: ConfigurationItemCreate, db: Session = Depends(get_db)):
+    return create_configuration_item(db=db, item=item)
 
-# Inicializar base de datos al startup
-init_db()
+# Health check endpoint
+@app.get("/health")
+async def health_check(db: Session = Depends(get_db)):
+    try:
+        # Test database connection
+        db.execute("SELECT 1")
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "orm": "sqlalchemy"
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
