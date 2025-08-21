@@ -254,6 +254,7 @@
             const username = document.getElementById('username').value;
             const password = document.getElementById('password').value;
             const errorMessage = document.getElementById('errorMessage');
+             console.log('Intentando login con:', username);
             
             try {
                 const formData = new FormData();
@@ -264,11 +265,13 @@
                     method: 'POST',
                     body: formData
                 });
-                
+
+                console.log('Respuesta del servidor:', response.status);
+
                 if (response.ok) {
                     const data = await response.json();
                     localStorage.setItem('access_token', data.access_token);
-                    window.location.href = '/';
+                    window.location.href = '/dashboard';
                 } else {
                     errorMessage.textContent = 'Credenciales incorrectas. Por favor, verifica tus datos.';
                 }

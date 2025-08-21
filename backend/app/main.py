@@ -1,13 +1,16 @@
 from fastapi import FastAPI, Depends, HTTPException, Query, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.responses import FileResponse
 from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
 from datetime import datetime, timedelta
 from jose import jwt
 from jose.exceptions import JWTError
+from fastapi.middleware.cors import CORSMiddleware
 
 # Importar todos los modelos
+
 from models import Base, engine, get_db
 from models.servidor import Servidor
 from models.sistema_operativo import SistemaOperativo
@@ -24,6 +27,13 @@ app = FastAPI(
     title="InventarioT API",
     description="Sistema de inventario por 4 niveles: Servidores → SO → BD → Gestores",
     version="1.0.0"
+)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:8001"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Esquema OAuth2
@@ -280,6 +290,17 @@ def register_user(username: str, password: str, email: str, full_name: str, db: 
     db.refresh(db_user)
     return {"message": "Usuario creado exitosamente"}
 
+
+@app.get("/dashboard")
+async def dashboard():
+    """Sirve el dashboard principal"""
+    return FileResponse("../frontend/index.html")
+
+@app.get("/", include_in_schema=False)  # include_in_schema=False para ocultar de docs
+async def root():
+    """Redirige al dashboard desde la raíz"""
+    return FileResponse("../frontend/index.html")
+
 # Endpoint público para verificar estado
 @app.get("/")
 async def root():
@@ -470,3 +491,7 @@ async def dashboard():
 @app.get("/login")
 async def login():
     return FileResponse("../frontend/login.html")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8001)

@@ -1,8 +1,11 @@
-from .base import Base, engine, get_db
-from .servidor import Servidor
-from .sistema_operativo import SistemaOperativo
-from .base_datos import BaseDatos
-from .gestor import Gestor
+from models.base import Base, engine, get_db 
+from models.servidor import Servidor
+from models.sistema_operativo import SistemaOperativo
+from models.base_datos import BaseDatos
+from models.gestor import Gestor
+from models.user import User
 
-# Importar todos los modelos para que SQLAlchemy los detecte
-__all__ = ['Base', 'engine', 'get_db', 'Servidor', 'SistemaOperativo', 'BaseDatos', 'Gestor']
+print("🔧 Creando todas las tablas...")
+Base.metadata.create_all(bind=engine)
+print("✅ Tablas creadas exitosamente!")
+print("📁 Base de datos creada en: inventario.db")
