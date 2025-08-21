@@ -3,49 +3,290 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>InventarioT - Iniciar Sesión</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="css/styles.css">
+    <title>InventarioT - Login</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --background: #f5f7fb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            padding: 20px;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            color: #333;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 30px;
+        }
+
+        .logo i {
+            font-size: 42px;
+            margin-right: 15px;
+            color: var(--primary);
+        }
+
+        .logo h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .welcome-text {
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .welcome-text h2 {
+            font-size: 28px;
+            margin-bottom: 15px;
+            color: #2d3748;
+        }
+
+        .welcome-text p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #718096;
+        }
+
+        .login-form {
+            width: 100%;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #4a5568;
+        }
+
+        .input-with-icon {
+            position: relative;
+        }
+
+        .input-with-icon i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #a0aec0;
+        }
+
+        .input-with-icon input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .input-with-icon input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 15px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .error-message {
+            color: #e53e3e;
+            margin-top: 15px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .features {
+            margin-top: 40px;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 30px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            color: #4a5568;
+        }
+
+        .feature i {
+            font-size: 20px;
+            margin-right: 15px;
+            background: rgba(67, 97, 238, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+        }
+
+        .footer {
+            margin-top: 30px;
+            text-align: center;
+            color: #718096;
+            font-size: 14px;
+        }
+
+        @media (max-width: 480px) {
+            .login-container {
+                padding: 30px 20px;
+            }
+            
+            .logo h1 {
+                font-size: 28px;
+            }
+            
+            .welcome-text h2 {
+                font-size: 24px;
+            }
+        }
+    </style>
 </head>
-<body class="login-page">
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-6 col-lg-5">
-                <div class="login-container">
-                    <div class="text-center mb-4">
-                        <i class="bi bi-database-gear login-logo"></i>
-                        <h1 class="h3 mb-3 font-weight-normal">InventarioT - CMDB</h1>
-                        <p class="text-muted">Sistema de Gestión de Activos de TI</p>
-                    </div>
-
-                    <form id="loginForm">
-                        <div class="mb-3">
-                            <label for="username" class="form-label">Usuario</label>
-                            <input type="text" class="form-control" id="username" required autofocus>
-                        </div>
-                        <div class="mb-3">
-                            <label for="password" class="form-label">Contraseña</label>
-                            <input type="password" class="form-control" id="password" required>
-                        </div>
-                        <div class="mb-3 form-check">
-                            <input type="checkbox" class="form-check-input" id="rememberMe">
-                            <label class="form-check-label" for="rememberMe">Recordar mis datos</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 py-2">
-                            <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                        </button>
-                    </form>
-
-                    <div class="mt-4 text-center">
-                        <p class="mb-0">¿Problemas para acceder? <a href="#">Contactar al administrador</a></p>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <i class="fas fa-server"></i>
+            <h1>InventarioT</h1>
+        </div>
+        
+        <div class="welcome-text">
+            <h2>Bienvenido al Sistema</h2>
+            <p>Gestiona tus activos de TI de manera eficiente con nuestra plataforma integral de inventario.</p>
+        </div>
+        
+        <div class="login-form">
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">Usuario</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-user"></i>
+                        <input type="text" id="username" placeholder="Ingresa tu usuario" required>
                     </div>
                 </div>
+                
+                <div class="form-group">
+                    <label for="password">Contraseña</label>
+                    <div class="input-with-icon">
+                        <i class="fas fa-lock"></i>
+                        <input type="password" id="password" placeholder="Ingresa tu contraseña" required>
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn-login">Ingresar al Sistema</button>
+                <div id="errorMessage" class="error-message"></div>
+            </form>
+        </div>
+        
+        <div class="features">
+            <div class="feature">
+                <i class="fas fa-server"></i>
+                <span>Gestión completa de servidores</span>
             </div>
+            <div class="feature">
+                <i class="fab fa-windows"></i>
+                <span>Control de sistemas operativos</span>
+            </div>
+            <div class="feature">
+                <i class="fas fa-database"></i>
+                <span>Administración de bases de datos</span>
+            </div>
+        </div>
+        
+        <div class="footer">
+            <p>InventarioT &copy; 2024 - Sistema de Gestión de Activos de TI</p>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/login.js"></script>
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            try {
+                const formData = new FormData();
+                formData.append('username', username);
+                formData.append('password', password);
+                
+                const response = await fetch('/token', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    localStorage.setItem('access_token', data.access_token);
+                    window.location.href = '/';
+                } else {
+                    errorMessage.textContent = 'Credenciales incorrectas. Por favor, verifica tus datos.';
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Error de conexión. Intenta nuevamente.';
+            }
+        });
+
+        // Función para testing rápido (solo en desarrollo)
+        // Puedes comentar o eliminar estas líneas en producción
+        document.addEventListener('DOMContentLoaded', function() {
+            // Auto-completar para testing rápido
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('test') === 'true') {
+                document.getElementById('username').value = 'admin';
+                document.getElementById('password').value = 'admin123';
+            }
+        });
+    </script>
 </body>
 </html>
