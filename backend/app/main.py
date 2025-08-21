@@ -4,7 +4,8 @@ from sqlalchemy.orm import Session
 from typing import List, Optional
 import json
 from datetime import datetime, timedelta
-from jose import JWTError, jwt
+from jose import jwt
+from jose.exceptions import JWTError
 
 # Importar todos los modelos
 from models import Base, engine, get_db
