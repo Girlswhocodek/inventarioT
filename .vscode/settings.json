@@ -1,0 +1,17 @@
+{
+    "python.analysis.extraPaths": [
+        "./backend",
+        "./backend/app",
+        "./backend/app/models",
+        "./backend/app/routes"
+    ],
+    "python.autoComplete.extraPaths": [
+        "./backend",
+        "./backend/app", 
+        "./backend/app/models",
+        "./backend/app/routes"
+    ],
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportMissingImports": "none"
+    }
+}
