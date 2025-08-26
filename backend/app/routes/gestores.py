@@ -7,6 +7,7 @@ import json
 from app.models.base import get_db
 from app.models.gestor import Gestor
 from app.routes.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter(tags=["Gestores"])
 

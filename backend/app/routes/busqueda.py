@@ -1,14 +1,15 @@
-# app/routes/busqueda.py
+
 from fastapi import APIRouter, Depends, Query, HTTPException
 from sqlalchemy.orm import Session
 from typing import Optional
 
-from models.base import get_db
-from models.servidor import Servidor
-from models.sistema_operativo import SistemaOperativo
-from models.base_datos import BaseDatos
-from models.gestor import Gestor
-from routes.auth import get_current_user
+from app.models.base import get_db
+from app.models.servidor import Servidor
+from app.models.sistema_operativo import SistemaOperativo
+from app.models.base_datos import BaseDatos
+from app.models.gestor import Gestor
+from app.models.user import User
+from app.routes.auth import get_current_user
 
 router = APIRouter(tags=["Búsqueda"])
 

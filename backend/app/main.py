@@ -5,21 +5,22 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 
-from models.base import Base, engine, get_db
-from models.user import User, pwd_context
-from models.servidor import Servidor
-from models.sistema_operativo import SistemaOperativo
-from models.base_datos import BaseDatos
-from models.gestor import Gestor
+from app.models.base import Base, engine, get_db
+from app.models.user import User, pwd_context
+from app.models.servidor import Servidor
+from app.models.sistema_operativo import SistemaOperativo
+from app.models.base_datos import BaseDatos
+from app.models.gestor import Gestor
 
 # Importar routers
+
 from app.routes import auth, servidores, sistemas_operativos, bases_datos, gestores, busqueda, kpis
 
 # Función para crear usuarios
 def crear_usuario_admin():
     db = next(get_db())
     try:
-        # Crear usuario admin por defecto si no existe
+        # Crear usuario admin por defecto
         if db.query(User).filter(User.username == "admin").first() is None:
             hashed_password = pwd_context.hash("admin123")
             admin_user = User(
@@ -223,7 +224,8 @@ app.add_middleware(
 )
 
 # Incluir routers
-app.include_router(auth.router, prefix="/auth", tags=["Authentication"])
+
+app.include_router(auth.router, tags=["Authentication"])
 app.include_router(servidores.router, tags=["Servidores"])
 app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
 app.include_router(bases_datos.router, tags=["Bases de Datos"])

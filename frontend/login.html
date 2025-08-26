@@ -195,8 +195,8 @@
 <body>
     <div class="login-container">
         <div class="logo">
-            <i class="fas fa-server"></i>
-            <h1>InventarioT</h1>
+            <i class="fas fa-box-open"></i>
+            <h1>Inventario O&M TI</h1>
         </div>
         
         <div class="welcome-text">
@@ -227,23 +227,9 @@
             </form>
         </div>
         
-        <div class="features">
-            <div class="feature">
-                <i class="fas fa-server"></i>
-                <span>Gestión completa de servidores</span>
-            </div>
-            <div class="feature">
-                <i class="fab fa-windows"></i>
-                <span>Control de sistemas operativos</span>
-            </div>
-            <div class="feature">
-                <i class="fas fa-database"></i>
-                <span>Administración de bases de datos</span>
-            </div>
-        </div>
         
         <div class="footer">
-            <p>InventarioT &copy; 2024 - Sistema de Gestión de Activos de TI</p>
+            <p>Inventario &copy; 2025 - Sistema de Gestión de Activos de TI</p>
         </div>
     </div>
 
@@ -260,8 +246,9 @@
                 const formData = new FormData();
                 formData.append('username', username);
                 formData.append('password', password);
+                formData.append('grant_type', 'password');
                 
-                const response = await fetch('/token', {
+                const response = await fetch('/auth/token', {
                     method: 'POST',
                     body: formData
                 });

@@ -8,6 +8,7 @@ from app.models.sistema_operativo import SistemaOperativo
 from app.models.base_datos import BaseDatos
 from app.models.gestor import Gestor
 from app.routes.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter(tags=["KPIs"])
 

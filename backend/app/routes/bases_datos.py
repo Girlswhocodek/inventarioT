@@ -3,9 +3,10 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from typing import List
 
-from models.base import get_db
-from models.base_datos import BaseDatos
+from app.models.base import get_db
+from app.models.base_datos import BaseDatos
 from app.routes.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter(tags=["Bases de Datos"])
 

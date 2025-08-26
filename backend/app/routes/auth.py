@@ -1,11 +1,13 @@
 # app/routes/auth.py
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from datetime import datetime, timedelta
+from datetime import datetime
+from datetime import timedelta
 from jose import jwt, JWTError
 
-from app.db.base import get_db
+from app.models.base import get_db
 from app.models.user import User, pwd_context
 
 router = APIRouter(tags=["Authentication"])
@@ -55,20 +57,25 @@ async def get_current_user(token: str = Depends(oauth2_scheme), db: Session = De
     return user
 
 # Endpoints de autenticación
-@router.post("/token")
+@router.post("/auth/token")
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    print(f"Intento de login: username={form_data.username}, password={form_data.password}")
+    
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
+        print("Autenticación fallida")
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Credenciales incorrectas",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    print(f"Usuario autenticado: {user.username}")
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
+
 
 @router.post("/register")
 def register_user(username: str, password: str, email: str, full_name: str, db: Session = Depends(get_db)):

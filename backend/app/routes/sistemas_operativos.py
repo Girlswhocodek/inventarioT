@@ -4,9 +4,10 @@ from sqlalchemy.orm import Session
 from typing import List
 import json
 
-from app.db.base import get_db
+from app.models.base import get_db
 from app.models.sistema_operativo import SistemaOperativo
 from app.routes.auth import get_current_user
+from app.models.user import User
 
 router = APIRouter(tags=["Sistemas Operativos"])
 
