@@ -286,23 +286,38 @@
             color: var(--dark);
         }
 
-        .filter-options {
-            display: flex;
-            gap: 15px;
-            flex-wrap: wrap;
+        .filter-combo {
+            position: relative;
+            width: 100%;
+            max-width: 400px;
         }
-
-        .filter-option {
-            padding: 10px 20px;
-            background: #f0f4ff;
-            border-radius: 30px;
+        
+        .combo-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #d1d5db;
+            border-radius: 8px;
+            background-color: white;
+            font-size: 16px;
+            color: #374151;
+            appearance: none;
             cursor: pointer;
             transition: var(--transition);
         }
-
-        .filter-option.active {
-            background: var(--primary);
-            color: white;
+        
+        .combo-select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        .combo-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #6b7280;
         }
 
         /* Results Section */
@@ -401,6 +416,10 @@
             .user-panel {
                 right: -50px;
             }
+            
+            .filter-combo {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -489,12 +508,24 @@
             <!-- Filter Section -->
             <div class="filter-section">
                 <div class="filter-title">Filtrar por Nivel:</div>
-                <div class="filter-options">
-                    <div class="filter-option active" data-value="">Todos</div>
-                    <div class="filter-option" data-value="servidores">Servidores</div>
-                    <div class="filter-option" data-value="sistemas_operativos">Sistemas Operativos</div>
-                    <div class="filter-option" data-value="bases_datos">Bases de Datos</div>
-                    <div class="filter-option" data-value="gestores">Gestores</div>
+                <div class="filter-combo">
+                    <select class="combo-select" id="filtroSelect">
+                        <option value="">Todos los niveles</option>
+                        <option value="servidores">Servidores</option>
+                        <option value="sistemas_operativos">Sistemas Operativos</option>
+                        <option value="bases_datos">Bases de Datos</option>
+                        <option value="gestores">Gestores de Bases de Datos</option>
+                        <option value="aplicaciones">Aplicaciones</option>
+                        <option value="redes">Equipos de Red</option>
+                        <option value="almacenamiento">Sistemas de Almacenamiento</option>
+                        <option value="virtualizacion">Plataformas de Virtualización</option>
+                        <option value="seguridad">Equipos de Seguridad</option>
+                        <option value="backup">Sistemas de Backup</option>
+                        <option value="monitoreo">Herramientas de Monitoreo</option>
+                    </select>
+                    <div class="combo-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
                 </div>
             </div>
 
@@ -511,6 +542,7 @@
             </div>
         </div>
     </div>
+    
 
     <script>
         // Verificar autenticación al cargar
@@ -523,7 +555,6 @@
         try {
             const payload = JSON.parse(atob(token.split('.')[1]));
             document.getElementById('usernameDisplay').textContent = payload.sub;
-            document.getElementById('panelUserName').textContent = payload.sub;
         } catch (e) {
             console.error('Error decoding token:', e);
         }
@@ -547,15 +578,6 @@
             window.location.href = '/login';
         });
 
-        // Configurar filtros
-        document.querySelectorAll('.filter-option').forEach(option => {
-            option.addEventListener('click', function() {
-                document.querySelectorAll('.filter-option').forEach(opt => opt.classList.remove('active'));
-                this.classList.add('active');
-                buscar();
-            });
-        });
-
         // Función para hacer fetch con autenticación
         const fetchWithAuth = (url, options = {}) => {
             const token = localStorage.getItem('access_token');
@@ -577,15 +599,13 @@
                 return response.json();
             })
             .then(data => {
-                document.getElementById('totalServidores').textContent = data.total_servidores;
-                document.getElementById('servidoresActivos').textContent = data.servidores_activos;
-                document.getElementById('totalBasesDatos').textContent = data.total_bases_datos;
-                document.getElementById('totalSistemas').textContent = data.total_sistemas_operativos;
+                // Aquí puedes actualizar tus KPIs si los tienes en el dashboard
+                console.log('Datos de KPIs:', data);
             });
 
         function buscar() {
             const query = document.getElementById('searchInput').value;
-            const nivel = document.querySelector('.filter-option.active').getAttribute('data-value');
+            const nivel = document.getElementById('filtroSelect').value;
             
             let url = '/buscar?q=' + encodeURIComponent(query);
             if (nivel) url += '&nivel=' + nivel;
@@ -599,7 +619,11 @@
                     }
                     return response.json();
                 })
-                .then(data => mostrarResultados(data));
+                .then(data => mostrarResultados(data))
+                .catch(error => {
+                    console.error('Error en la búsqueda:', error);
+                    document.getElementById('resultados').innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i><p>Error al realizar la búsqueda</p></div>';
+                });
         }
 
         function mostrarResultados(data) {
@@ -665,6 +689,11 @@
             if (e.key === 'Enter') {
                 buscar();
             }
+        });
+        
+        // Inicializar con búsqueda vacía al cargar
+        document.addEventListener('DOMContentLoaded', function() {
+            buscar();
         });
     </script>
 </body>
