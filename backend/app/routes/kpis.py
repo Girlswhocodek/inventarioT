@@ -12,7 +12,7 @@ from app.models.user import User
 
 router = APIRouter(tags=["KPIs"])
 
-@router.get("/kpis")
+@router.get("api/kpis")
 async def obtener_kpis(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     total_servidores = db.query(Servidor).count()
     servidores_activos = db.query(Servidor).filter(Servidor.estado == "activo").count()

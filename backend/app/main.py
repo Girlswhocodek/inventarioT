@@ -166,7 +166,7 @@ app.include_router(auth.router, tags=["Authentication"])
 #app.include_router(bases_datos.router, tags=["Bases de Datos"])
 #app.include_router(gestores.router, tags=["Gestores"])
 app.include_router(busqueda.router, tags=["Búsqueda"])
-#app.include_router(kpis.router, tags=["KPIs"])
+app.include_router(kpis.router, tags=["KPIs"])
 
 # --- Rutas absolutas para archivos estáticos ---
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend"))

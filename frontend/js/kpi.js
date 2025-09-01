@@ -45,17 +45,18 @@ const inicializarGraficos = () => {
         new Chart(distCtx, {
             type: 'doughnut',
             data: {
-                labels: ['Servidores', 'Bases de Datos', 'Sistemas Operativos', 'Aplicaciones'],
-                datasets: [{
-                    data: [45, 25, 20, 10],
-                    backgroundColor: [
-                        '#2563eb',
-                        '#10b981',
-                        '#f59e0b',
-                        '#ef4444'
-                    ]
-                }]
-            },
+    labels: ['Servidores', 'Bases de Datos', 'Sistemas Operativos', 'Gestores'],
+    datasets: [{
+        data: [
+            datos.total_servidores,
+            datos.total_bases_datos,
+            datos.total_sistemas_operativos,
+            datos.total_gestores
+        ],
+        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444']
+    }]
+}
+,
             options: {
                 responsive: true,
                 plugins: {
@@ -88,28 +89,43 @@ const configurarFiltrosTiempo = () => {
     });
 };
 
-// Cargar datos de KPIs desde la API
+
 const cargarDatosKPIs = async () => {
     try {
-        const datos = await window.api.obtenerKPIs();
-        if (datos) {
-            actualizarKPIsUI(datos);
-        }
+        const response = await fetch("/api/kpis", {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("token")
+            }
+        });
+        if (!response.ok) throw new Error("Error en la respuesta de la API");
+        
+        const datos = await response.json();
+        actualizarKPIsUI(datos);
     } catch (error) {
-        console.error('Error cargando datos de KPIs:', error);
+        console.error("Error cargando datos de KPIs:", error);
     }
 };
 
+
+// Actualizar la UI con los datos de KPIs
 // Actualizar la UI con los datos de KPIs
 const actualizarKPIsUI = (datos) => {
-    // Aquí puedes actualizar los valores de las tarjetas KPI
-    // con los datos reales de la API
-    console.log('Datos de KPIs recibidos:', datos);
-    
-    // Ejemplo:
-    // document.querySelector('.kpi-card:nth-child(1) .kpi-value').textContent = datos.disponibilidad + '%';
-    // document.querySelector('.kpi-card:nth-child(2) .kpi-value').textContent = datos.incidentes_resueltos + '%';
+    console.log("Datos de KPIs recibidos:", datos);
+
+    // Ejemplo: actualiza tarjetas
+    const tarjetas = document.querySelectorAll(".kpi-card .kpi-value");
+
+    if (tarjetas.length >= 4) {
+        tarjetas[0].textContent = datos.total_servidores;         // Total servidores
+        tarjetas[1].textContent = datos.servidores_activos;       // Servidores activos
+        tarjetas[2].textContent = datos.servidores_inactivos;     // Servidores inactivos
+        tarjetas[3].textContent = datos.total_bases_datos;        // Bases de datos
+        tarjetas[4].textContent = datos.total_sistemas_operativos; 
+        tarjetas[5].textContent = datos.total_gestores; 
+        // Y podrías extender a sistemas operativos y gestores si los muestras
+    }
 };
+
 
 // Configurar event listeners
 const configurarEventListeners = () => {
