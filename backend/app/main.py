@@ -12,8 +12,10 @@ from app.models.sistema_operativo import SistemaOperativo
 from app.models.base_datos import BaseDatos
 from app.models.gestor import Gestor
 
+
 # Importar routers
 from app.routes import auth, servidores, sistemas_operativos, bases_datos, gestores, busqueda, kpis
+
 
 # --- Función para crear usuarios ---
 def crear_usuario_admin():
@@ -153,14 +155,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+#servir
+app.mount("/static", StaticFiles(directory="../frontend"), name="static")
+app.mount("/css", StaticFiles(directory="../frontend/css"), name="css")
+app.mount("/js", StaticFiles(directory="../frontend/js"), name="js")
 # --- Routers ---
 app.include_router(auth.router, tags=["Authentication"])
-app.include_router(servidores.router, tags=["Servidores"])
-app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
-app.include_router(bases_datos.router, tags=["Bases de Datos"])
-app.include_router(gestores.router, tags=["Gestores"])
+#app.include_router(servidores.router, tags=["Servidores"])
+#app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
+#app.include_router(bases_datos.router, tags=["Bases de Datos"])
+#app.include_router(gestores.router, tags=["Gestores"])
 app.include_router(busqueda.router, tags=["Búsqueda"])
-app.include_router(kpis.router, tags=["KPIs"])
+#app.include_router(kpis.router, tags=["KPIs"])
 
 # --- Rutas absolutas para archivos estáticos ---
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend"))
@@ -181,6 +187,10 @@ async def login():
 @app.get("/dashboard", include_in_schema=False)
 async def dashboard():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
+
+@app.get("/kpis", include_in_schema=False)
+async def kpis():
+    return FileResponse(os.path.join(FRONTEND_DIR, "kpis.html"))
 
 # --- Health check ---
 @app.get("/health", include_in_schema=False)

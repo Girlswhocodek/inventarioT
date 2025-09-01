@@ -12,41 +12,47 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="logo">
-                <i class="fas fa-box-open"></i>
-                <h1>Inventario</h1>
-            </div>
-            
-            <div class="nav-item active">
-                <i class="fas fa-home"></i>
-                <span>Dashboard</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-server"></i>
-                <span>Servidores</span>
-            </div>
-            <div class="nav-item">
-                <i class="fab fa-windows"></i>
-                <span>Sistemas Operativos</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-database"></i>
-                <span>Bases de Datos</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-tools"></i>
-                <span>Gestión</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-chart-line"></i>
-                <span>KPIs</span>
-            </div>
-            <div class="nav-item">
-                <i class="fas fa-cog"></i>
-                <span>Configuración</span>
-            </div>
-        </div>
+      <div class="sidebar">
+    <div class="logo">
+        <i class="fas fa-box-open"></i>
+        <h1>Inventario</h1>
+    </div>
+    
+    <div class="nav-item active" onclick="window.location.href='/dashboard'">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+    </div>
+  
+    <div class="nav-item" onclick="window.location.href='/servidores'">
+        <i class="fas fa-server"></i>
+        <span>Servidores</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
+        <i class="fab fa-windows"></i>
+        <span>Sistemas Operativos</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/bases-datos'">
+        <i class="fas fa-database"></i>
+        <span>Bases de Datos</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/gestion'">
+        <i class="fas fa-tools"></i>
+        <span>Gestión</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/kpis'">
+        <i class="fas fa-chart-line"></i>
+        <span>KPIs</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/configuracion'">
+        <i class="fas fa-cog"></i>
+        <span>Configuración</span>
+    </div>
+</div>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -63,7 +69,7 @@
                     <i class="fas fa-user-circle" style="font-size: 32px; color: #4361ee; margin-right: 10px;"></i>
                     <div>
                         <div id="usernameDisplay">Administrador</div>
-                        <small>Rol: Administrador</small>
+                        <small>Administrador</small>
                     </div>
                     
                     <!-- Panel desplegable de usuario -->
@@ -174,6 +180,57 @@
             return fetch(url, options);
         };
         
+    // NAVEGACIÓN ENTRE SECCIONES
+function setupNavigation() {
+    const navItems = document.querySelectorAll('.nav-item');
+    const contentSections = document.querySelectorAll('.content-section');
+    
+    navItems.forEach(item => {
+        item.addEventListener('click', function() {
+            const targetId = this.getAttribute('data-target');
+            const targetSection = document.getElementById(targetId);
+            
+            if (targetSection) {
+                // Ocultar todas las secciones
+                contentSections.forEach(section => {
+                    section.classList.remove('active');
+                    section.style.display = 'none';
+                });
+                
+                // Mostrar solo la sección objetivo
+                targetSection.style.display = 'block';
+                targetSection.classList.add('active');
+                
+                // Actualizar menú activo
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+                
+                // Si es la sección de KPIs, recargar datos
+                if (targetId === 'kpis') {
+                    loadKpisData();
+                }
+            }
+        });
+    });
+}
+
+// Función para cargar datos de KPIs
+function loadKpisData() {
+    fetchWithAuth('/kpis')
+        .then(response => response.json())
+        .then(data => {
+            // Aquí actualizas la sección de KPIs con los datos
+            console.log('Datos KPIs:', data);
+            document.getElementById('kpis-content').innerHTML = 
+                `<h2>KPIs Cargados: ${data.length} indicadores</h2>`;
+        })
+        .catch(error => console.error('Error loading KPIs:', error));
+}
+
+// Inicializar navegación cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    setupNavigation();
+});
         // Cargar KPIs al iniciar
         fetchWithAuth('/kpis')
             .then(response => {
@@ -281,6 +338,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             buscar();
         });
+
     </script>
 </body>
 </html>

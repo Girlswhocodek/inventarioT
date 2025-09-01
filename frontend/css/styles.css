@@ -127,4 +127,11 @@ body {
     .filter-combo {
         max-width: 100%;
     }
+    .content-section {
+    display: none;
+}
+
+.content-section.active {
+    display: block;
+}
 }

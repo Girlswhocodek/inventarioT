@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - KPIs</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/components.css">
+    <link rel="stylesheet" href="static/css/kpi.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+    <div class="logo">
+        <i class="fas fa-box-open"></i>
+        <h1>Inventario</h1>
+    </div>
+    
+    <div class="nav-item active" onclick="window.location.href='/dashboard'">
+        <i class="fas fa-home"></i>
+        <span>Dashboard</span>
+    </div>
+  
+    <div class="nav-item" onclick="window.location.href='/servidores'">
+        <i class="fas fa-server"></i>
+        <span>Servidores</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
+        <i class="fab fa-windows"></i>
+        <span>Sistemas Operativos</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/bases-datos'">
+        <i class="fas fa-database"></i>
+        <span>Bases de Datos</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/gestion'">
+        <i class="fas fa-tools"></i>
+        <span>Gestión</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/kpis'">
+        <i class="fas fa-chart-line"></i>
+        <span>KPIs</span>
+    </div>
+    
+    <div class="nav-item" onclick="window.location.href='/configuracion'">
+        <i class="fas fa-cog"></i>
+        <span>Configuración</span>
+    </div>
+</div>
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1><i class="fas fa-chart-line"></i> Panel de KPIs</h1>
+                
+                <div class="time-filter">
+                    <button class="time-btn">Hoy</button>
+                    <button class="time-btn">Esta semana</button>
+                    <button class="time-btn active">Este mes</button>
+                    <button class="time-btn">Este trimestre</button>
+                    <button class="time-btn">Este año</button>
+                </div>
+            </div>
+            
+            <!-- KPI Cards -->
+            <div class="kpi-cards">
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Disponibilidad de Servidores</div>
+                        <div class="kpi-icon server">
+                            <i class="fas fa-server"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">99.85%</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i> 0.15% desde el mes pasado
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Incidentes Resueltos</div>
+                        <div class="kpi-icon tasks">
+                            <i class="fas fa-tasks"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">92%</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-up"></i> 3% desde el mes pasado
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Tiempo Medio de Respuesta</div>
+                        <div class="kpi-icon clock">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">45 min</div>
+                    <div class="kpi-change negative">
+                        <i class="fas fa-arrow-down"></i> 5 min desde el mes pasado
+                    </div>
+                </div>
+                
+                <div class="kpi-card">
+                    <div class="kpi-header">
+                        <div class="kpi-title">Capacidad de Almacenamiento</div>
+                        <div class="kpi-icon storage">
+                            <i class="fas fa-hdd"></i>
+                        </div>
+                    </div>
+                    <div class="kpi-value">78%</div>
+                    <div class="kpi-change positive">
+                        <i class="fas fa-arrow-down"></i> 5% desde el mes pasado
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Charts -->
+            <div class="charts-container">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Rendimiento de Servidores</div>
+                    </div>
+                    <canvas id="performanceChart"></canvas>
+                </div>
+                
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div class="chart-title">Distribución por Tipo</div>
+                    </div>
+                    <canvas id="distributionChart"></canvas>
+                </div>
+            </div>
+            
+            <!-- Table -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div class="chart-title">Servidores Críticos</div>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>IP</th>
+                                <th>Estado</th>
+                                <th>Disponibilidad</th>
+                                <th>Responsable</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>ERP Server</td>
+                                <td>192.168.1.200</td>
+                                <td><span class="status active">Activo</span></td>
+                                <td>99.9%</td>
+                                <td>Ana García</td>
+                            </tr>
+                            <tr>
+                                <td>Web Server</td>
+                                <td>192.168.1.201</td>
+                                <td><span class="status active">Activo</span></td>
+                                <td>99.8%</td>
+                                <td>Carlos López</td>
+                            </tr>
+                            <tr>
+                                <td>DB Primary</td>
+                                <td>192.168.1.210</td>
+                                <td><span class="status maintenance">Mantenimiento</span></td>
+                                <td>98.2%</td>
+                                <td>María Rodríguez</td>
+                            </tr>
+                            <tr>
+                                <td>API Gateway</td>
+                                <td>192.168.1.215</td>
+                                <td><span class="status active">Activo</span></td>
+                                <td>99.7%</td>
+                                <td>Javier Méndez</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js"></script>
+    <script src="js/auth.js"></script>
+    <script src="js/kpi.js"></script> 
+</body>
+</html>
