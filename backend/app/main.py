@@ -5,7 +5,8 @@ from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse, RedirectResponse
 import os
 
-from app.models.base import Base, engine, get_db
+#from app.models.base import Base, engine, get_db
+from app.database import Base, engine, get_db
 from app.models.user import User, pwd_context
 from app.models.servidor import Servidor
 from app.models.sistema_operativo import SistemaOperativo
@@ -155,13 +156,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-#servir
+
 app.mount("/static", StaticFiles(directory="../frontend"), name="static")
 app.mount("/css", StaticFiles(directory="../frontend/css"), name="css")
 app.mount("/js", StaticFiles(directory="../frontend/js"), name="js")
 # --- Routers ---
 app.include_router(auth.router, tags=["Authentication"])
-#app.include_router(servidores.router, tags=["Servidores"])
+app.include_router(servidores.router, tags=["Servidores"])
 #app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
 #app.include_router(bases_datos.router, tags=["Bases de Datos"])
 #app.include_router(gestores.router, tags=["Gestores"])
@@ -191,6 +192,10 @@ async def dashboard():
 @app.get("/kpis", include_in_schema=False)
 async def kpis():
     return FileResponse(os.path.join(FRONTEND_DIR, "kpis.html"))
+
+@app.get("/servidores", include_in_schema=False)
+async def servidores_dashboard():
+    return FileResponse(os.path.join(FRONTEND_DIR, "servidores.html"))
 
 # --- Health check ---
 @app.get("/health", include_in_schema=False)

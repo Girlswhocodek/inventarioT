@@ -107,8 +107,6 @@ const cargarDatosKPIs = async () => {
 };
 
 
-// Actualizar la UI con los datos de KPIs
-// Actualizar la UI con los datos de KPIs
 const actualizarKPIsUI = (datos) => {
     console.log("Datos de KPIs recibidos:", datos);
 
@@ -122,7 +120,8 @@ const actualizarKPIsUI = (datos) => {
         tarjetas[3].textContent = datos.total_bases_datos;        // Bases de datos
         tarjetas[4].textContent = datos.total_sistemas_operativos; 
         tarjetas[5].textContent = datos.total_gestores; 
-        // Y podrías extender a sistemas operativos y gestores si los muestras
+        print("carga de tarjetas")
+        
     }
 };
 

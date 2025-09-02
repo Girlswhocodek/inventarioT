@@ -1,0 +1,179 @@
+<!-- frontend/servidores.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Servidores</title>
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/components.css">
+    <link rel="stylesheet" href="static/css/kpi.css"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-box-open"></i>
+                <h1>Inventario</h1>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/dashboard'">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+      
+            <div class="nav-item active" onclick="window.location.href='/servidores'">
+                <i class="fas fa-server"></i>
+                <span>Servidores</span>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
+                <i class="fab fa-windows"></i>
+                <span>Sistemas Operativos</span>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/bases-datos'">
+                <i class="fas fa-database"></i>
+                <span>Bases de Datos</span>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/gestion'">
+                <i class="fas fa-tools"></i>
+                <span>Gestión</span>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/kpis'">
+                <i class="fas fa-chart-line"></i>
+                <span>KPIs</span>
+            </div>
+        
+            <div class="nav-item" onclick="window.location.href='/configuracion'">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </div>
+        </div>
+
+        <!-- Contenido Principal -->
+        <div class="main-content">
+            <div class="header">
+                <h1>📊 Servidores</h1>
+                <div id="loading" class="loading">
+                    Cargando datos...
+                </div>
+            </div>
+
+            <div id="content" style="display: none;">
+                <!-- Tarjetas de estadísticas -->
+                <div class="stats-grid" id="stats-grid">
+                    <!-- Se llenará con JavaScript -->
+                </div>
+            
+                <!-- Tabla de servidores -->
+                <div class="table-container">
+                    <h2>📋 Lista de Servidores</h2>
+                    <table id="servers-table">
+                        <thead>
+                            <tr>
+                                <th>Nombre</th>
+                                <th>IP</th>
+                                <th>Estado</th>
+                                <th>CPU</th>
+                                <th>RAM</th>
+                                <th>Almacenamiento</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servers-body">
+                            <!-- Se llenará con JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function cargarDatos() {
+            try {
+                // Cargar estadísticas
+                const statsResponse = await fetch('/api/servidores/estados');
+                const statsData = await statsResponse.json();
+                
+                // Cargar lista de servidores
+                const serversResponse = await fetch('/api/servidores/');
+                const serversData = await serversResponse.json();
+                
+                // Mostrar estadísticas
+                mostrarEstadisticas(statsData);
+                
+                // Mostrar servidores en tabla
+                mostrarServidores(serversData);
+                
+                // Ocultar loading, mostrar contenido
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('content').style.display = 'block';
+                
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('loading').innerHTML = 
+                    '❌ Error al cargar los datos. Recarga la página.';
+            }
+        }
+        
+        function mostrarEstadisticas(data) {
+            const statsGrid = document.getElementById('stats-grid');
+            statsGrid.innerHTML = '';
+            
+            // Tarjeta de total
+            statsGrid.innerHTML += `
+                <div class="stat-card">
+                    <div class="stat-label">Total de Servidores</div>
+                    <div class="stat-number">${data.total_servidores}</div>
+                    <div class="stat-label">📦 en el sistema</div>
+                </div>
+            `;
+            
+            // Tarjetas por estado
+            data.por_estado.forEach(estado => {
+                let emoji = '❓';
+                if (estado.estado === 'activo') emoji = '✅';
+                if (estado.estado === 'mantenimiento') emoji = '🔧';
+                if (estado.estado === 'inactivo') emoji = '⏸️';
+                
+                statsGrid.innerHTML += `
+                    <div class="stat-card">
+                        <div class="stat-label">Servidores ${estado.estado}</div>
+                        <div class="stat-number">${estado.cantidad}</div>
+                        <div class="stat-label">${emoji} ${estado.estado.toUpperCase()}</div>
+                    </div>
+                `;
+            });
+        }
+        
+        function mostrarServidores(servidores) {
+            const tbody = document.getElementById('servers-body');
+            tbody.innerHTML = '';
+            
+            servidores.forEach(servidor => {
+                const statusClass = `status-badge ${servidor.estado}`;
+                
+                tbody.innerHTML += `
+                    <tr>
+                        <td><strong>${servidor.nombre}</strong></td>
+                        <td>${servidor.ip}</td>
+                        <td><span class="${statusClass}">${servidor.estado}</span></td>
+                        <td>${servidor.cpu_nucleos || 0} núcleos</td>
+                        <td>${servidor.ram_gb || 0} GB</td>
+                        <td>${servidor.almacenamiento_gb || 0} GB</td>
+                    </tr>
+                `;
+            });
+        }
+        
+        // Cargar datos cuando la página se abra
+        document.addEventListener('DOMContentLoaded', cargarDatos);
+    </script>
+</body>
+</html>
