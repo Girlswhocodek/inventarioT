@@ -25,12 +25,13 @@ def get_database_engine():
             echo=True 
         )
     else:
+        
         # Oracle
         oracle_user = os.getenv("ORACLE_USER")
         oracle_password = os.getenv("ORACLE_PASSWORD")
         oracle_host = os.getenv("ORACLE_HOST")
         oracle_port = os.getenv("ORACLE_PORT", "1521")
-        oracle_service = os.getenv("ORACLE_SERVICE", "XEPDB1")
+        oracle_service = os.getenv("ORACLE_SERVICE")
         
         if not all([oracle_user, oracle_password, oracle_host]):
             raise ValueError("❌ Configuración de Oracle incompleta en variables de entorno")
