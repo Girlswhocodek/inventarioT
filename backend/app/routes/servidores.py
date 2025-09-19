@@ -11,19 +11,29 @@ from app.models.user import User
 
 router = APIRouter(tags=["Servidores"])
 
-@router.get("api/servidores", response_model=List[dict])
+@router.get("/api/servidores", response_model=List[dict])
 async def listar_servidores(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     servidores = db.query(Servidor).all()
     return [{
         "id": s.id,
         "nombre": s.nombre,
-        "ip": s.ip,
+        "tecnologia": s.tecnologia,
+        "particionado": s.particionado,
         "cpu_nucleos": s.cpu_nucleos,
-        "ram_gb": s.ram_gb,
+        "ram_gb": float(s.ram_gb) if s.ram_gb else None,
         "almacenamiento_gb": s.almacenamiento_gb,
+        "fecha_instalacion_so": s.fecha_instalacion_so.isoformat() if s.fecha_instalacion_so else None,
+        "ip": s.ip,
+        "fabricante": s.fabricante,
+        "modelo": s.modelo,
+        "numero_serie": s.numero_serie,
+        "ubicacion": s.ubicacion,
         "estado": s.estado,
-        "responsable": s.responsable,
-        "fecha_creacion": s.fecha_creacion
+        "responsable": s.responsable,  
+        "responsable_id": s.responsable_id,  #fk
+        "arquitectura": s.arquitectura,
+        "fecha_creacion": s.fecha_creacion.isoformat() if s.fecha_creacion else None,
+        "fecha_actualizacion": s.fecha_actualizacion.isoformat() if s.fecha_actualizacion else None
     } for s in servidores]
 
 @router.get("/api/servidores/activos", response_model=List[dict])

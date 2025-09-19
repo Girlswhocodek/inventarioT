@@ -1,5 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, JSON, ForeignKey
-from sqlalchemy.sql import func
+from sqlalchemy import Column, Date, Integer, String, JSON, ForeignKey
 from sqlalchemy.orm import relationship
 from .base import Base
 
@@ -7,15 +6,21 @@ class Gestor(Base):
     __tablename__ = "gestores"
     
     id = Column(Integer, primary_key=True, index=True)
-    base_datos_id = Column(Integer, ForeignKey('bases_datos.id'), nullable=False)
-    nombre = Column(String(100), nullable=False)
-    tipo = Column(String(50))  # phpMyAdmin, pgAdmin, Enterprise Manager, etc.
-    version = Column(String(20))
-    permisos_asignados = Column(JSON)  # Permisos como JSON
-    configuracion = Column(JSON)       # Configuración específica
-    url_acceso = Column(String(200))
-    estado = Column(String(20), default="activo")
-    fecha_actualizacion = Column(DateTime, default=func.now(), onupdate=func.now())
+    nombre = Column(String(50), nullable=False)  # Oracle, MySQL, PostgreSQL
+    version = Column(String(20), nullable=False)
+    fabricante = Column(String(50))  # Oracle Corporation, MySQL AB
+    tipo_gestor = Column(String(50))  # RDBMS, NoSQL, etc.
+    fecha_fuera_soporte = Column(Date)
     
-    # Relación con la base de datos
-    base_datos = relationship("BaseDatos", backref="gestores")
+    # Relación con instancias
+    instancias = relationship(
+        "InstanciaBd", 
+        back_populates="gestor",
+        foreign_keys="[InstanciaBd.gestor_bd_id]"  
+    )
+    
+    def __repr__(self):
+        return f"<Gestor(nombre='{self.nombre}', version='{self.version}')>"
+    
+    def __str__(self):
+        return f"{self.nombre} {self.version}"

@@ -52,9 +52,9 @@ async def buscar(
     if not nivel or nivel == "gestores":
         gestores = db.query(Gestor).filter(
             (Gestor.nombre.ilike(f"%{q}%")) |
-            (Gestor.tipo.ilike(f"%{q}%")) |
+            (Gestor.tipo_gestor.ilike(f"%{q}%")) |
             (Gestor.version.ilike(f"%{q}%")) |
-            (Gestor.estado.ilike(f"%{q}%"))
+            (Gestor.fabricante.ilike(f"%{q}%"))
         ).all()
         resultados["gestores"] = gestores
     

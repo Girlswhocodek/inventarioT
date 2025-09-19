@@ -11,7 +11,7 @@ from app.models.user import User
 
 router = APIRouter(tags=["Sistemas Operativos"])
 
-@router.get("/sistemas-operativos", response_model=List[dict])
+@router.get("api/sistemas-operativos", response_model=List[dict])
 async def listar_sistemas_operativos(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
     sistemas = db.query(SistemaOperativo).all()
     return [{
