@@ -1,12 +1,10 @@
-/* css/kpi.css - Estilos específicos para la página de KPIs */
 
-/* Variables específicas para KPIs */
 :root {
     --kpi-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
     --chart-card-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
-/* Header específico para KPIs */
+
 .kpi-header {
     display: flex;
     justify-content: space-between;
@@ -28,7 +26,7 @@
     color: var(--primary-color);
 }
 
-/* Filtro de tiempo */
+
 .time-filter {
     display: flex;
     gap: 10px;

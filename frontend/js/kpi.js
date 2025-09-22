@@ -118,8 +118,7 @@ const actualizarKPIsUI = (datos) => {
         tarjetas[1].textContent = datos.servidores_activos;       // Servidores activos
         tarjetas[2].textContent = datos.servidores_inactivos;     // Servidores inactivos
         tarjetas[3].textContent = datos.total_bases_datos;        // Bases de datos
-        tarjetas[4].textContent = datos.total_sistemas_operativos; 
-        tarjetas[5].textContent = datos.total_gestores; 
+        
         print("carga de tarjetas")
         
     }

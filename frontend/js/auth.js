@@ -30,6 +30,27 @@ const cerrarSesion = () => {
     localStorage.removeItem('access_token');
     window.location.href = '/login';
 };
+ try {
+            const payload = JSON.parse(atob(token.split('.')[1]));
+            document.getElementById('usernameDisplay').textContent = payload.sub;
+        } catch (e) {
+            console.error('Error decoding token:', e);
+        }
+document.getElementById('userInfoPanel').addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.getElementById('userPanel').classList.toggle('active');
+        });
+
+        // Cerrar el panel al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('#userInfoPanel')) {
+                document.getElementById('userPanel').classList.remove('active');
+            }
+        });
+ document.getElementById('logoutButton').addEventListener('click', function() {
+            localStorage.removeItem('access_token');
+            window.location.href = '/login';
+        });
 
 // Configurar panel de usuario
 const configurarPanelUsuario = () => {
@@ -91,3 +112,7 @@ window.auth = {
     configurarPanelUsuario,
     configurarLogin
 };
+function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
