@@ -836,27 +836,27 @@ tr:hover {
     border-radius: 5px;
     cursor: pointer;
     font-size: 14px;
-    background-color: #007bff;
+    background-color: #386392;
     color: white;
     transition: background-color 0.3s ease;
 }
 
 .btn-edit:hover {
-    background-color: #0056b3;
+    background-color: #386392;
 }
 .btn-edit.btn-save {
-    background-color: #28a745;
+    background-color: #386392;
 }
 .btn-edit.btn-save:hover {
-    background-color: #1e7e34;
+    background-color: #386392;
 }
 
 .btn-save:hover {
-    background-color: #1e7e34;
+    background-color: #386392;
 }
 
 .edit-input {
-    border: 2px solid #007bff;
+    border: 2px solid #386392;
     border-radius: 4px;
     padding: 8px;
     font-size: 14px;
@@ -866,5 +866,5 @@ tr:hover {
 
 .edit-input:focus {
     outline: none;
-    border-color: #0056b3;
+    border-color: #386392;
 }
