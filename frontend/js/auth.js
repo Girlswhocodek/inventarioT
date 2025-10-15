@@ -61,12 +61,13 @@ const configurarPanelUsuario = () => {
     if (!userInfoPanel || !userPanel || !logoutButton) return;
     
     // Toggle del panel
-    userInfoPanel.addEventListener('click', function(e) {
-        e.stopPropagation();
-        userPanel.classList.toggle('active');
-    });
     
-    // Cerrar panel al hacer clic fuera
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+    
+        // Cerrar panel al hacer clic fuera
     document.addEventListener('click', function(e) {
         if (!e.target.closest('#userInfoPanel')) {
             userPanel.classList.remove('active');
@@ -112,7 +113,3 @@ window.auth = {
     configurarPanelUsuario,
     configurarLogin
 };
-function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }

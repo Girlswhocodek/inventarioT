@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from sqlalchemy import func, case, extract
 from app.models.base import get_db
-# Importa solo el nuevo modelo y la base, los viejos ya no son necesarios
 from app.models.kpi_data import KpiRegistro, KpiEstado 
 from app.routes.auth import get_current_user
 from app.models.user import User
@@ -30,7 +29,7 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
     # Inicializar conteos
     conteo_kpis = {
         "total_registros_dia": total_registros,
-        "registros_completos": 0,
+        "registros_iguales": 0,
         "registros_faltantes_bd": 0,
         "registros_faltantes_cg": 0,
         "total_faltantes": 0,
@@ -38,8 +37,8 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
     }
 
     for estado, conteo in conteo_por_estado:
-        if estado == KpiEstado.COMPLETO:
-            conteo_kpis["registros_completos"] = conteo
+        if estado == KpiEstado.IGUAL:
+            conteo_kpis["registros_iguales"] = conteo
         elif estado == KpiEstado.FALTANTE_BD:
             conteo_kpis["registros_faltantes_bd"] = conteo
         elif estado == KpiEstado.FALTANTE_CG:
@@ -49,7 +48,7 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
     
     if total_registros > 0:
         conteo_kpis["porcentaje_completitud"] = round(
-            (conteo_kpis["registros_completos"] / total_registros) * 100, 2
+            (conteo_kpis["registros_iguales"] / total_registros) * 100, 2
         )
 
     # --- TOP 5 Esquemas por Faltantes ---
@@ -57,11 +56,11 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
     top_esquemas = db.query(
         KpiRegistro.esquema,
         func.sum(case(
-            (KpiRegistro.estado != KpiEstado.COMPLETO, 1), 
+            (KpiRegistro.estado != KpiEstado.IGUAL, 1), 
             else_=0
         )).label("conteo_faltantes")
     ).group_by(KpiRegistro.esquema).order_by(func.sum(case(
-        (KpiRegistro.estado != KpiEstado.COMPLETO, 1), 
+        (KpiRegistro.estado != KpiEstado.IGUAL, 1), 
         else_=0
     )).desc()).limit(5).all()
 
@@ -75,7 +74,7 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
         extract('year', KpiRegistro.fecha).label("year"),
         extract('month', KpiRegistro.fecha).label("month"),
         func.count().label("total"),
-        func.sum(case((KpiRegistro.estado == KpiEstado.COMPLETO, 1), else_=0)).label("completos"),
+        func.sum(case((KpiRegistro.estado == KpiEstado.IGUAL, 1), else_=0)).label("iguales"),
         func.sum(case((KpiRegistro.estado == KpiEstado.FALTANTE_BD, 1), else_=0)).label("faltantes_bd"),
         func.sum(case((KpiRegistro.estado == KpiEstado.FALTANTE_CG, 1), else_=0)).label("faltantes_cg"),
     ).group_by("year", "month").order_by("year", "month").all()
@@ -84,10 +83,10 @@ async def obtener_kpis_data_quality(db: Session = Depends(get_db), current_user:
         {
             "mes_anho": f"{row.year:04d}-{row.month:02d}", # Formato YYYY-MM
             "total": row.total,
-            "completos": row.completos,
+            "iguales": row.iguales,
             "faltantes_bd": row.faltantes_bd,
             "faltantes_cg": row.faltantes_cg,
-            "porcentaje_completitud": round((row.completos / row.total) * 100, 2) if row.total > 0 else 0.0
+            "porcentaje_igualitud": round((row.iguales / row.total) * 100, 2) if row.total > 0 else 0.0
         }
         for row in tendencia_mensual
     ]

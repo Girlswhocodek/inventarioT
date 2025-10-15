@@ -6,70 +6,62 @@
     <title>Inventario - KPIs</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="static/css/styles.css">
-    <link rel="stylesheet" href="static/css/components.css">
-    <link rel="stylesheet" href="static/css/kpi.css"> 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<link rel="stylesheet" href="static/css/components.css">
+<link rel="stylesheet" href="static/css/kpi.css">
+    
+       
 </head>
 <body>
-    <div class="container">
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
         <!-- Sidebar -->
         <div class="sidebar">
-    <div class="logo">
-        <i class="fas fa-box-open"></i>
-        <h1>Inventario</h1>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/dashboard'">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-    </div>
-  
-    <div class="nav-item" onclick="window.location.href='/servidores'">
-        <i class="fas fa-server"></i>
-        <span>Servidores</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
-        <i class="fab fa-windows"></i>
-        <span>Sistemas Operativos</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/bases-datos'">
-        <i class="fas fa-database"></i>
-        <span>Bases de Datos</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/gestion'">
-        <i class="fas fa-tools"></i>
-        <span>Gestión</span>
-    </div>
-    
-    <div class="nav-item active" onclick="window.location.href='/kpis'">
-        <i class="fas fa-chart-line"></i>
-        <span>KPIs</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/configuracion'">
-        <i class="fas fa-cog"></i>
-        <span>Configuración</span>
-    </div>
-</div>
-        
-
-
+            <div class="logo">
+                <i class="fas fa-box-open"></i>
+                <h1>Inventario</h1>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/dashboard'">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/servidores'">
+                <i class="fas fa-server"></i>
+                <span>Servidores</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
+                <i class="fab fa-windows"></i>
+                <span>Sistemas Operativos</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/bases-datos'">
+                <i class="fas fa-database"></i>
+                <span>Bases de Datos</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/gestion'">
+                <i class="fas fa-tools"></i>
+                <span>Gestión</span>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='/kpis'">
+                <i class="fas fa-chart-line"></i>
+                <span>KPIs</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/configuracion'">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </div>
+        </div>
 
         <!-- Main Content -->
         <div class="main-content">
             <div class="header">
-                <h1><i class="fas fa-chart-line"></i> Panel de KPIs</h1>
-                
+                <h1><i class="fas fa-chart-line"></i>Gestion DB - Reportes</h1>
                 <div class="user-info" id="userInfoPanel">
-                    <i class="fas fa-user-circle" style="font-size: 32px; color: #4361ee; margin-right: 10px;"></i>
-                    <div>
-                        <div id="usernameDisplay">Administrador</div>
-                        <small>Administrador</small>
-                    </div>
-                    
+                <i class="fas fa-user-circle" style="font-size: 32px; color: #2c47c180; margin-right: 10px;"></i>
+                <div>
+                    <div id="usernameDisplay">Administrador</div>
+                    <small>Administrador</small>
+                </div>
+              
                     <!-- Panel desplegable de usuario -->
                     <div class="user-panel" id="userPanel">
                         <div class="user-panel-menu">
@@ -94,134 +86,516 @@
                     </div>
                 </div>
             </div>
-            
-            <!-- KPI Cards -->
-            <div class="kpi-cards">
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div class="kpi-title">Disponibilidad de Servidores</div>
-                        <div class="kpi-icon server">
-                            <i class="fas fa-server"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">99.85%</div>
-                    <div class="kpi-change positive">
-                        <i class="fas fa-arrow-up"></i> 0.15% desde el mes pasado
-                    </div>
-                </div>
-                
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div class="kpi-title">Incidentes Resueltos</div>
-                        <div class="kpi-icon tasks">
-                            <i class="fas fa-tasks"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">92%</div>
-                    <div class="kpi-change positive">
-                        <i class="fas fa-arrow-up"></i> 3% desde el mes pasado
-                    </div>
-                </div>
-                
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div class="kpi-title">Tiempo Medio de Respuesta</div>
-                        <div class="kpi-icon clock">
-                            <i class="fas fa-clock"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">45 min</div>
-                    <div class="kpi-change negative">
-                        <i class="fas fa-arrow-down"></i> 5 min desde el mes pasado
-                    </div>
-                </div>
-                
-                <div class="kpi-card">
-                    <div class="kpi-header">
-                        <div class="kpi-title">Capacidad de Almacenamiento</div>
-                        <div class="kpi-icon storage">
-                            <i class="fas fa-hdd"></i>
-                        </div>
-                    </div>
-                    <div class="kpi-value">78%</div>
-                    <div class="kpi-change positive">
-                        <i class="fas fa-arrow-down"></i> 5% desde el mes pasado
-                    </div>
-                </div>
-            </div>
-            
-            <!-- Charts -->
-            <div class="charts-container">
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Rendimiento de Servidores</div>
-                    </div>
-                    <canvas id="performanceChart"></canvas>
-                </div>
 
-                <div class="chart-card">
-                    <div class="chart-header">
-                        <div class="chart-title">Distribución por Tipo</div>
+            <!-- Filters Section -->
+            <div class="filters-section">
+                <div class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    Filtros de Búsqueda
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Tipo de Filtro</label>
+                        <select id="filterType">
+                            <option value="day">Un día</option>
+                            <option value="range">Rango de días</option>
+                            <option value="month">Mes</option>
+                        </select>
                     </div>
-                    <canvas id="distributionChart"></canvas>
+                    <div class="filter-group" id="singleDayFilter">
+                        <label>Fecha</label>
+                        <input type="date" id="singleDate">
+                    </div>
+                    <div class="filter-group" id="startDateFilter" style="display:none;">
+                        <label>Fecha Inicio</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group" id="endDateFilter" style="display:none;">
+                        <label>Fecha Fin</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <div class="filter-group" id="monthFilter" style="display:none;">
+                        <label>Mes</label>
+                        <input type="month" id="monthSelect">
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <select id="statusFilter">
+                            <option value="">Todos</option>
+                            <option value="igual">Igual</option>
+                            <option value="faltante-bd">Faltante BD</option>
+                            <option value="faltante-cg">Faltante CG</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <input type="text" id="stateFilter" placeholder="Filtrar por estado">
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-success" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Descargar Excel
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fas fa-redo"></i> Limpiar Filtros
+                    </button>
                 </div>
             </div>
-            
+
             <!-- Table -->
-            <div class="chart-card">
-                <div class="chart-header">
-                    <div class="chart-title">Servidores Críticos</div>
+            <div class="table-card">
+                <div class="table-header">
+                    <div class="table-title">Registros de Tráfico y Estado</div>
                 </div>
                 <div class="table-container">
                     <table>
                         <thead>
                             <tr>
-                                <th>Nombre</th>
-                                <th>IP</th>
+                                <th>Fecha</th>
+                                <th>Tráfico</th>
+                                <th>Esquema</th>
+                                <th>Tablas</th>
+                                <th>Tipo</th>
                                 <th>Estado</th>
-                                <th>Disponibilidad</th>
-                                <th>Responsable</th>
+                                <th>Diferencia</th>
+                                <th>Archivos CG</th>
+                                <th>Registros CG</th>
+                                <th>Archivos DB</th>
+                                <th>Registros DB</th>
+                                <th>Dif. Registros</th>
+                                <th>Fecha Reproceso</th>
                             </tr>
                         </thead>
-                        <tbody>
-                            <tr>
-                                <td>ERP Server</td>
-                                <td>192.168.1.200</td>
-                                <td><span class="status active">Activo</span></td>
-                                <td>99.9%</td>
-                                <td>Ana García</td>
-                            </tr>
-                            <tr>
-                                <td>Web Server</td>
-                                <td>192.168.1.201</td>
-                                <td><span class="status active">Activo</span></td>
-                                <td>99.8%</td>
-                                <td>Carlos López</td>
-                            </tr>
-                            <tr>
-                                <td>DB Primary</td>
-                                <td>192.168.1.210</td>
-                                <td><span class="status maintenance">Mantenimiento</span></td>
-                                <td>98.2%</td>
-                                <td>María Rodríguez</td>
-                            </tr>
-                            <tr>
-                                <td>API Gateway</td>
-                                <td>192.168.1.215</td>
-                                <td><span class="status active">Activo</span></td>
-                                <td>99.7%</td>
-                                <td>Javier Méndez</td>
-                            </tr>
+                        <tbody id="dataTable">
+                            <!-- Data will be inserted here -->
                         </tbody>
                     </table>
+                </div>
+                <div class="pagination">
+                    <button onclick="previousPage()" id="prevBtn">
+                        <i class="fas fa-chevron-left"></i>
+                    </button>
+                    <span id="pageInfo">Página 1 de 1</span>
+                    <button onclick="nextPage()" id="nextBtn">
+                        <i class="fas fa-chevron-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Modal for Details -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-info-circle"></i> Detalles del Registro</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div class="filters-section">
+                <div class="filters-title">
+                    <i class="fas fa-filter"></i>
+                    Filtros de Búsqueda
+                </div>
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label>Tipo de Filtro</label>
+                        <select id="filterType">
+                            <option value="day">Un día</option>
+                            <option value="range">Rango de días</option>
+                            <option value="month">Mes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group" id="singleDayFilter">
+                        <label>Fecha</label>
+                        <input type="date" id="singleDate">
+                    </div>
+                    <div class="filter-group" id="startDateFilter" style="display:none;">
+                        <label>Fecha Inicio</label>
+                        <input type="date" id="startDate">
+                    </div>
+                    <div class="filter-group" id="endDateFilter" style="display:none;">
+                        <label>Fecha Fin</label>
+                        <input type="date" id="endDate">
+                    </div>
+                    <div class="filter-group" id="monthFilter" style="display:none;">
+                        <label>Mes</label>
+                        <input type="month" id="monthSelect">
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <select id="statusFilter">
+                            <option value="">Todos</option>
+                            <option value="igual">Igual</option>
+                            <option value="faltante-bd">Faltante BD</option>
+                            <option value="faltante-cg">Faltante CG</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Estado</label>
+                        <input type="text" id="stateFilter" placeholder="Filtrar por estado">
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        <i class="fas fa-search"></i> Buscar
+                    </button>
+                    <button class="btn btn-success" onclick="exportToExcel()">
+                        <i class="fas fa-file-excel"></i> Descargar Excel
+                    </button>
+                    <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fas fa-redo"></i> Limpiar Filtros
+                    </button>
+                </div>
+            </div>
+            <div class="detail-grid" id="detailContent">
+                <!-- Details will be inserted here -->
+            </div>
+            <div style="margin-top: 20px; text-align: right;">
+                <button class="btn btn-success" onclick="exportDetailToExcel()">
+                    <i class="fas fa-file-excel"></i> Exportar Detalle
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data - Replace with your API call
+        let allData = [
+            {
+                fecha: '2025-10-14',
+                trafico: 'Alto',
+                esquema: 'GPRS',
+                tablas: 25,
+                tipo: 'SCM',
+                estado: 'igual',
+                diferencia: 0,
+                cant_archivos_cg: 150,
+                cnt_regis_cg: 45000,
+                cant_archivos_db: 150,
+                cant_regis_db: 45000,
+                diferencia_registros: 0,
+                fecha_reproceso: null
+            },
+            {
+                fecha: '2025-10-13',
+                trafico: 'Medio',
+                esquema: 'inventario',
+                tablas: 18,
+                tipo: 'Operacional',
+                estado: 'faltante-bd',
+                diferencia: -5,
+                cant_archivos_cg: 120,
+                cnt_regis_cg: 38000,
+                cant_archivos_db: 115,
+                cant_regis_db: 36500,
+                diferencia_registros: -1500,
+                fecha_reproceso: '2025-10-14'
+            },
+            {
+                fecha: '2025-10-12',
+                trafico: 'Bajo',
+                esquema: 'clientes',
+                tablas: 12,
+                tipo: 'Analítico',
+                estado: 'faltante-cg',
+                diferencia: 3,
+                cant_archivos_cg: 95,
+                cnt_regis_cg: 28000,
+                cant_archivos_db: 98,
+                cant_regis_db: 29200,
+                diferencia_registros: 1200,
+                fecha_reproceso: '2025-10-13'
+            },
+              {
+                fecha: '2025-10-12',
+                trafico: 'Bajo',
+                esquema: 'clientes',
+                tablas: 12,
+                tipo: 'Analítico',
+                estado: 'igual',
+                diferencia: 3,
+                cant_archivos_cg: 98,
+                cnt_regis_cg: 28000,
+                cant_archivos_db: 98,
+                cant_regis_db: 28000,
+                diferencia_registros: 0,
+                fecha_reproceso: 'null'
+            }
+        ];
+
+        let filteredData = [...allData];
+        let currentPage = 1;
+        const rowsPerPage = 10;
+        let selectedRecord = null;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('singleDate').value = today;
+            
+            document.getElementById('filterType').addEventListener('change', function() {
+                updateFilterVisibility(this.value);
+            });
+            
+            renderTable();
+        });
+
+        function updateFilterVisibility(type) {
+            document.getElementById('singleDayFilter').style.display = type === 'day' ? 'block' : 'none';
+            document.getElementById('startDateFilter').style.display = type === 'range' ? 'block' : 'none';
+            document.getElementById('endDateFilter').style.display = type === 'range' ? 'block' : 'none';
+            document.getElementById('monthFilter').style.display = type === 'month' ? 'block' : 'none';
+        }
+
+        function applyFilters() {
+            const filterType = document.getElementById('filterType').value;
+            const statusFilter = document.getElementById('statusFilter').value;
+            const stateFilter = document.getElementById('stateFilter').value.toLowerCase();
+            
+            filteredData = allData.filter(item => {
+                let dateMatch = true;
+                
+                if (filterType === 'day') {
+                    const singleDate = document.getElementById('singleDate').value;
+                    dateMatch = item.fecha === singleDate;
+                } else if (filterType === 'range') {
+                    const startDate = document.getElementById('startDate').value;
+                    const endDate = document.getElementById('endDate').value;
+                    dateMatch = item.fecha >= startDate && item.fecha <= endDate;
+                } else if (filterType === 'month') {
+                    const month = document.getElementById('monthSelect').value;
+                    dateMatch = item.fecha.startsWith(month);
+                }
+                
+                const statusMatch = !statusFilter || item.estado === statusFilter;
+                const schemaMatch = !stateFilter || item.estate.toLowerCase().includes(stateFilter);
+                
+                return dateMatch && statusMatch && schemaMatch;
+            });
+            
+            currentPage = 1;
+            renderTable();
+        }
+
+        function resetFilters() {
+            document.getElementById('filterType').value = 'day';
+            document.getElementById('singleDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('statusFilter').value = '';
+            document.getElementById('schemaFilter').value = '';
+            updateFilterVisibility('day');
+            filteredData = [...allData];
+            currentPage = 1;
+            renderTable();
+        }
+
+        function renderTable() {
+            const tbody = document.getElementById('dataTable');
+            tbody.innerHTML = '';
+            
+            const start = (currentPage - 1) * rowsPerPage;
+            const end = start + rowsPerPage;
+            const pageData = filteredData.slice(start, end);
+            
+            pageData.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.className = item.estado;
+                row.onclick = () => showDetail(item);
+                
+                row.innerHTML = `
+                    <td>${item.fecha}</td>
+                    <td>${item.trafico}</td>
+                    <td>${item.esquema}</td>
+                    <td>${item.tablas}</td>
+                    <td>${item.tipo}</td>
+                    <td><span class="status-badge status-${item.estado}">${item.estado.replace('-', ' ').toUpperCase()}</span></td>
+                    <td>${item.diferencia}</td>
+                    <td>${item.cant_archivos_cg}</td>
+                    <td>${item.cnt_regis_cg.toLocaleString()}</td>
+                    <td>${item.cant_archivos_db}</td>
+                    <td>${item.cant_regis_db.toLocaleString()}</td>
+                    <td>${item.diferencia_registros.toLocaleString()}</td>
+                    <td>${item.fecha_reproceso || '-'}</td>
+                `;
+                
+                tbody.appendChild(row);
+            });
+            
+            updatePagination();
+        }
+
+        function updatePagination() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${totalPages}`;
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = currentPage === totalPages;
+        }
+
+        function previousPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function showDetail(record) {
+            selectedRecord = record;
+            const modal = document.getElementById('detailModal');
+            const content = document.getElementById('detailContent');
+            
+            content.innerHTML = `
+                <div class="detail-item">
+                    <div class="detail-label">Fecha</div>
+                    <div class="detail-value">${record.fecha}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tráfico</div>
+                    <div class="detail-value">${record.trafico}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Esquema</div>
+                    <div class="detail-value">${record.esquema}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tablas</div>
+                    <div class="detail-value">${record.tablas}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Tipo</div>
+                    <div class="detail-value">${record.tipo}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Estado</div>
+                    <div class="detail-value"><span class="status-badge status-${record.estado}">${record.estado.replace('-', ' ').toUpperCase()}</span></div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Diferencia</div>
+                    <div class="detail-value">${record.diferencia}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Archivos CG</div>
+                    <div class="detail-value">${record.cant_archivos_cg}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Registros CG</div>
+                    <div class="detail-value">${record.cnt_regis_cg.toLocaleString()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Archivos DB</div>
+                    <div class="detail-value">${record.cant_archivos_db}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Registros DB</div>
+                    <div class="detail-value">${record.cant_regis_db.toLocaleString()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Diferencia Registros</div>
+                    <div class="detail-value">${record.diferencia_registros.toLocaleString()}</div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-label">Fecha Reproceso</div>
+                    <div class="detail-value">${record.fecha_reproceso || 'No aplica'}</div>
+                </div>
+            `;
+            
+            modal.classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('detailModal').classList.remove('active');
+        }
+
+        function exportToExcel() {
+            const headers = ['Fecha', 'Tráfico', 'Esquema', 'Tablas', 'Tipo', 'Estado', 'Diferencia', 
+                           'Archivos CG', 'Registros CG', 'Archivos DB', 'Registros DB', 
+                           'Diferencia Registros', 'Fecha Reproceso'];
+            
+            const csvContent = [
+                headers.join(','),
+                ...filteredData.map(row => [
+                    row.fecha,
+                    row.trafico,
+                    row.esquema,
+                    row.tablas,
+                    row.tipo,
+                    row.estado,
+                    row.diferencia,
+                    row.cant_archivos_cg,
+                    row.cnt_regis_cg,
+                    row.cant_archivos_db,
+                    row.cant_regis_db,
+                    row.diferencia_registros,
+                    row.fecha_reproceso || ''
+                ].join(','))
+            ].join('\n');
+            
+            downloadCSV(csvContent, 'reporte_kpis.csv');
+        }
+
+        function exportDetailToExcel() {
+            if (!selectedRecord) return;
+            
+            const headers = ['Campo', 'Valor'];
+            const rows = [
+                ['Fecha', selectedRecord.fecha],
+                ['Tráfico', selectedRecord.trafico],
+                ['Esquema', selectedRecord.esquema],
+                ['Tablas', selectedRecord.tablas],
+                ['Tipo', selectedRecord.tipo],
+                ['Estado', selectedRecord.estado],
+                ['Diferencia', selectedRecord.diferencia],
+                ['Archivos CG', selectedRecord.cant_archivos_cg],
+                ['Registros CG', selectedRecord.cnt_regis_cg],
+                ['Archivos DB', selectedRecord.cant_archivos_db],
+                ['Registros DB', selectedRecord.cant_regis_db],
+                ['Diferencia Registros', selectedRecord.diferencia_registros],
+                ['Fecha Reproceso', selectedRecord.fecha_reproceso || 'No aplica']
+            ];
+            
+            const csvContent = [
+                headers.join(','),
+                ...rows.map(row => row.join(','))
+            ].join('\n');
+            
+            downloadCSV(csvContent, `detalle_${selectedRecord.fecha}_${selectedRecord.esquema}.csv`);
+        }
+
+        function downloadCSV(content, filename) {
+            const blob = new Blob(['\ufeff' + content], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            const url = URL.createObjectURL(blob);
+            
+            link.setAttribute('href', url);
+            link.setAttribute('download', filename);
+            link.style.visibility = 'hidden';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('detailModal');
+            if (event.target === modal) {
+                closeModal();
+            }
+        }
+    </script>
     <script src="static/js/api.js"></script>
     <script src="static/js/app.js"></script>
     <script src="static/js/auth.js"></script>
-    <script src="static/js/kpi.js"></script> 
+    <script src="static/js/kpi.js"></script>
+
+    
 </body>
 </html>

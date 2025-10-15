@@ -1,148 +1,501 @@
+// kpi.js - Script para integrar el dashboard con el backend
 
+let allData = [];
+let filteredData = [];
+let currentPage = 1;
+const rowsPerPage = 10;
+let selectedRecord = null;
 
-// Inicializar gráficos
-const inicializarGraficos = () => {
-    // Performance Chart
-    const perfCtx = document.getElementById('performanceChart');
-    if (perfCtx) {
-        new Chart(perfCtx, {
-            type: 'line',
-            data: {
-                labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
-                datasets: [
-                    {
-                        label: 'Disponibilidad (%)',
-                        data: [99.2, 99.5, 99.3, 99.6, 99.4, 99.8, 99.7, 99.6, 99.5, 99.7, 99.8, 99.85],
-                        borderColor: '#10b981',
-                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    },
-                    {
-                        label: 'Rendimiento (%)',
-                        data: [96.5, 97.2, 97.8, 97.5, 98.2, 98.5, 98.3, 98.7, 98.9, 99.1, 99.2, 99.3],
-                        borderColor: '#3b82f6',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        fill: true,
-                        tension: 0.3
-                    }
-                ]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                    }
-                }
-            }
-        });
-    }
+// API Base URL
+const API_BASE = '/api/kpis';
+
+// Inicializar cuando el DOM esté listo
+document.addEventListener('DOMContentLoaded', function() {
+    initializeFilters();
+    loadInitialData();
+    setupEventListeners();
+});
+
+function initializeFilters() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('singleDate').value = today;
     
-    // Distribution Chart
-    const distCtx = document.getElementById('distributionChart');
-    if (distCtx) {
-        new Chart(distCtx, {
-            type: 'doughnut',
-            data: {
-    labels: ['Servidores', 'Bases de Datos', 'Sistemas Operativos', 'Gestores'],
-    datasets: [{
-        data: [
-            datos.total_servidores,
-            datos.total_bases_datos,
-            datos.total_sistemas_operativos,
-            datos.total_gestores
-        ],
-        backgroundColor: ['#2563eb', '#10b981', '#f59e0b', '#ef4444']
-    }]
+    document.getElementById('filterType').addEventListener('change', function() {
+        updateFilterVisibility(this.value);
+    });
 }
-,
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'bottom',
-                    }
-                }
-            }
-        });
-    }
-};
 
-// Configurar filtros de tiempo
-const configurarFiltrosTiempo = () => {
-    const timeButtons = document.querySelectorAll('.time-btn');
+function setupEventListeners() {
+    // Cerrar modal al hacer clic fuera
+    window.onclick = function(event) {
+        const modal = document.getElementById('detailModal');
+        if (event.target === modal) {
+            closeModal();
+        }
+    };
     
-    timeButtons.forEach(button => {
-        button.addEventListener('click', function() {
-            // Remover clase active de todos los botones
-            timeButtons.forEach(btn => btn.classList.remove('active'));
-            
-            // Agregar clase active al botón clickeado
-            this.classList.add('active');
-            
-            // Aquí puedes agregar la lógica para filtrar por tiempo
-            const periodo = this.textContent.toLowerCase();
-            console.log('Filtrando por:', periodo);
-            // actualizarKPIs(periodo);
+    // Enter key en los inputs de filtro
+    const filterInputs = document.querySelectorAll('.filter-group input');
+    filterInputs.forEach(input => {
+        input.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                applyFilters();
+            }
         });
     });
-};
-
-
-const cargarDatosKPIs = async () => {
-    try {
-        const response = await fetch("/api/kpis", {
-            headers: {
-                "Authorization": "Bearer " + localStorage.getItem("token")
-            }
-        });
-        if (!response.ok) throw new Error("Error en la respuesta de la API");
-        
-        const datos = await response.json();
-        actualizarKPIsUI(datos);
-    } catch (error) {
-        console.error("Error cargando datos de KPIs:", error);
-    }
-};
-
-
-const actualizarKPIsUI = (datos) => {
-    console.log("Datos de KPIs recibidos:", datos);
-
-    // Ejemplo: actualiza tarjetas
-    const tarjetas = document.querySelectorAll(".kpi-card .kpi-value");
-
-    if (tarjetas.length >= 4) {
-        tarjetas[0].textContent = datos.total_servidores;         // Total servidores
-        tarjetas[1].textContent = datos.servidores_activos;       // Servidores activos
-        tarjetas[2].textContent = datos.servidores_inactivos;     // Servidores inactivos
-        tarjetas[3].textContent = datos.total_bases_datos;        // Bases de datos
-        
-        print("carga de tarjetas")
-        
-    }
-};
-
-
-// Configurar event listeners
-const configurarEventListeners = () => {
-    configurarFiltrosTiempo();
-};
-
-// Inicializar página de KPIs
-const inicializarPaginaKPIs = () => {
-    if (window.auth.verificarAutenticacion()) {
-        console.log('Inicializando página de KPIs...');
-        configurarEventListeners();
-        inicializarGraficos();
-        cargarDatosKPIs();
-    }
-};
-
-// Iniciar cuando el DOM esté listo
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', inicializarPaginaKPIs);
-} else {
-    inicializarPaginaKPIs();
 }
+
+function updateFilterVisibility(type) {
+    document.getElementById('singleDayFilter').style.display = type === 'day' ? 'block' : 'none';
+    document.getElementById('startDateFilter').style.display = type === 'range' ? 'block' : 'none';
+    document.getElementById('endDateFilter').style.display = type === 'range' ? 'block' : 'none';
+    document.getElementById('monthFilter').style.display = type === 'month' ? 'block' : 'none';
+}
+
+async function loadInitialData() {
+    try {
+        showLoading(true);
+        const today = new Date().toISOString().split('T')[0];
+        const params = new URLSearchParams({
+            filter_type: 'day',
+            single_date: today
+        });
+        
+        const response = await fetch(`${API_BASE}/data?${params}`);
+        
+        if (!response.ok) {
+            throw new Error('Error al cargar los datos');
+        }
+        
+        const data = await response.json();
+        allData = data;
+        filteredData = [...allData];
+        currentPage = 1;
+        renderTable();
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error al cargar los datos iniciales');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function applyFilters() {
+    try {
+        showLoading(true);
+        
+        const filterType = document.getElementById('filterType').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        const schemaFilter = document.getElementById('schemaFilter').value;
+        
+        const params = new URLSearchParams({
+            filter_type: filterType
+        });
+        
+        // Agregar parámetros de fecha según el tipo de filtro
+        if (filterType === 'day') {
+            const singleDate = document.getElementById('singleDate').value;
+            if (singleDate) {
+                params.append('single_date', singleDate);
+            }
+        } else if (filterType === 'range') {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            if (startDate && endDate) {
+                params.append('start_date', startDate);
+                params.append('end_date', endDate);
+            } else {
+                showError('Debe seleccionar fecha de inicio y fin');
+                return;
+            }
+        } else if (filterType === 'month') {
+            const month = document.getElementById('monthSelect').value;
+            if (month) {
+                params.append('month', month);
+            }
+        }
+        
+        // Agregar filtros adicionales
+        if (statusFilter) {
+            params.append('status', statusFilter);
+        }
+        if (schemaFilter) {
+            params.append('schema', schemaFilter);
+        }
+        
+        const response = await fetch(`${API_BASE}/data?${params}`);
+        
+        if (!response.ok) {
+            throw new Error('Error al aplicar filtros');
+        }
+        
+        const data = await response.json();
+        allData = data;
+        filteredData = [...allData];
+        currentPage = 1;
+        renderTable();
+        
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error al aplicar los filtros');
+    } finally {
+        showLoading(false);
+    }
+}
+
+function resetFilters() {
+    document.getElementById('filterType').value = 'day';
+    document.getElementById('singleDate').value = new Date().toISOString().split('T')[0];
+    document.getElementById('statusFilter').value = '';
+    document.getElementById('schemaFilter').value = '';
+    document.getElementById('startDate').value = '';
+    document.getElementById('endDate').value = '';
+    document.getElementById('monthSelect').value = '';
+    updateFilterVisibility('day');
+    loadInitialData();
+}
+
+function renderTable() {
+    const tbody = document.getElementById('dataTable');
+    tbody.innerHTML = '';
+    
+    if (filteredData.length === 0) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="13" style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px;"></i>
+                    <div>No se encontraron registros</div>
+                </td>
+            </tr>
+        `;
+        updatePagination();
+        return;
+    }
+    
+    const start = (currentPage - 1) * rowsPerPage;
+    const end = start + rowsPerPage;
+    const pageData = filteredData.slice(start, end);
+    
+    pageData.forEach((item) => {
+        const row = document.createElement('tr');
+        row.className = item.estado;
+        row.onclick = () => showDetail(item);
+        row.style.cursor = 'pointer';
+        
+        row.innerHTML = `
+            <td>${formatDate(item.fecha)}</td>
+            <td>${item.trafico}</td>
+            <td>${item.esquema}</td>
+            <td>${item.tablas}</td>
+            <td>${item.tipo}</td>
+            <td><span class="status-badge status-${item.estado}">${formatStatus(item.estado)}</span></td>
+            <td>${item.diferencia}</td>
+            <td>${formatNumber(item.cant_archivos_cg)}</td>
+            <td>${formatNumber(item.cnt_regis_cg)}</td>
+            <td>${formatNumber(item.cant_archivos_db)}</td>
+            <td>${formatNumber(item.cant_regis_db)}</td>
+            <td>${formatNumber(item.diferencia_registros)}</td>
+            <td>${item.fecha_reproceso ? formatDate(item.fecha_reproceso) : '-'}</td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    updatePagination();
+}
+
+function updatePagination() {
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    document.getElementById('pageInfo').textContent = `Página ${currentPage} de ${Math.max(totalPages, 1)}`;
+    document.getElementById('prevBtn').disabled = currentPage === 1;
+    document.getElementById('nextBtn').disabled = currentPage >= totalPages || totalPages === 0;
+}
+
+function previousPage() {
+    if (currentPage > 1) {
+        currentPage--;
+        renderTable();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function nextPage() {
+    const totalPages = Math.ceil(filteredData.length / rowsPerPage);
+    if (currentPage < totalPages) {
+        currentPage++;
+        renderTable();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+}
+
+function showDetail(record) {
+    selectedRecord = record;
+    const modal = document.getElementById('detailModal');
+    const content = document.getElementById('detailContent');
+    
+    content.innerHTML = `
+        <div class="detail-item">
+            <div class="detail-label">Fecha</div>
+            <div class="detail-value">${formatDate(record.fecha)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Tráfico</div>
+            <div class="detail-value">${record.trafico}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Esquema</div>
+            <div class="detail-value">${record.esquema}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Tablas</div>
+            <div class="detail-value">${record.tablas}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Tipo</div>
+            <div class="detail-value">${record.tipo}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Estado</div>
+            <div class="detail-value"><span class="status-badge status-${record.estado}">${formatStatus(record.estado)}</span></div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Diferencia</div>
+            <div class="detail-value">${record.diferencia}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Archivos CG</div>
+            <div class="detail-value">${formatNumber(record.cant_archivos_cg)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Registros CG</div>
+            <div class="detail-value">${formatNumber(record.cnt_regis_cg)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Archivos DB</div>
+            <div class="detail-value">${formatNumber(record.cant_archivos_db)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Registros DB</div>
+            <div class="detail-value">${formatNumber(record.cant_regis_db)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Diferencia Registros</div>
+            <div class="detail-value">${formatNumber(record.diferencia_registros)}</div>
+        </div>
+        <div class="detail-item">
+            <div class="detail-label">Fecha Reproceso</div>
+            <div class="detail-value">${record.fecha_reproceso ? formatDate(record.fecha_reproceso) : 'No aplica'}</div>
+        </div>
+    `;
+    
+    modal.classList.add('active');
+}
+
+function closeModal() {
+    document.getElementById('detailModal').classList.remove('active');
+}
+
+async function exportToExcel() {
+    try {
+        showLoading(true);
+        
+        const filterType = document.getElementById('filterType').value;
+        const statusFilter = document.getElementById('statusFilter').value;
+        const schemaFilter = document.getElementById('schemaFilter').value;
+        
+        const payload = {
+            filter_type: filterType,
+            status: statusFilter,
+            schema: schemaFilter
+        };
+        
+        // Agregar parámetros de fecha
+        if (filterType === 'day') {
+            payload.single_date = document.getElementById('singleDate').value;
+        } else if (filterType === 'range') {
+            payload.start_date = document.getElementById('startDate').value;
+            payload.end_date = document.getElementById('endDate').value;
+        } else if (filterType === 'month') {
+            payload.month = document.getElementById('monthSelect').value;
+        }
+        
+        const response = await fetch(`${API_BASE}/export/excel`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al exportar');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `reporte_kpis_${new Date().toISOString().split('T')[0]}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showSuccess('Excel descargado exitosamente');
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error al exportar a Excel');
+    } finally {
+        showLoading(false);
+    }
+}
+
+async function exportDetailToExcel() {
+    if (!selectedRecord) return;
+    
+    try {
+        showLoading(true);
+        
+        const response = await fetch(`${API_BASE}/export/detail`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ record_id: selectedRecord.id })
+        });
+        
+        if (!response.ok) {
+            throw new Error('Error al exportar detalle');
+        }
+        
+        const blob = await response.blob();
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `detalle_${selectedRecord.fecha}_${selectedRecord.esquema}.xlsx`;
+        document.body.appendChild(a);
+        a.click();
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        
+        showSuccess('Detalle descargado exitosamente');
+    } catch (error) {
+        console.error('Error:', error);
+        showError('Error al exportar detalle');
+    } finally {
+        showLoading(false);
+    }
+}
+
+// Utility Functions
+function formatDate(dateString) {
+    if (!dateString) return '-';
+    const date = new Date(dateString);
+    return date.toLocaleDateString('es-ES', {
+        year: 'numeric',
+        month: '2-digit',
+        day: '2-digit'
+    });
+}
+
+function formatNumber(num) {
+    if (num === null || num === undefined) return '0';
+    return num.toLocaleString('es-ES');
+}
+
+function formatStatus(status) {
+    const statusMap = {
+        'igual': 'IGUAL',
+        'faltante-bd': 'FALTANTE BD',
+        'faltante-cg': 'FALTANTE CG'
+    };
+    return statusMap[status] || status.toUpperCase();
+}
+
+function showLoading(show) {
+    // Implementar overlay de carga
+    let loader = document.getElementById('globalLoader');
+    if (!loader) {
+        loader = document.createElement('div');
+        loader.id = 'globalLoader';
+        loader.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        `;
+        loader.innerHTML = '<i class="fas fa-spinner fa-spin" style="font-size: 48px; color: white;"></i>';
+        document.body.appendChild(loader);
+    }
+    loader.style.display = show ? 'flex' : 'none';
+}
+
+function showError(message) {
+    showNotification(message, 'error');
+}
+
+function showSuccess(message) {
+    showNotification(message, 'success');
+}
+
+function showNotification(message, type) {
+    const notification = document.createElement('div');
+    notification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        padding: 15px 20px;
+        border-radius: 8px;
+        color: white;
+        font-weight: 600;
+        z-index: 10000;
+        animation: slideIn 0.3s ease;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+        background: ${type === 'error' ? '#e74c3c' : '#27ae60'};
+    `;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'}"></i>
+        ${message}
+    `;
+    
+    document.body.appendChild(notification);
+    
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => {
+            document.body.removeChild(notification);
+        }, 300);
+    }, 3000);
+}
+
+// Agregar animaciones CSS
+const style = document.createElement('style');
+style.textContent = `
+    @keyframes slideIn {
+        from {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+        to {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    }
+    @keyframes slideOut {
+        from {
+            transform: translateX(0);
+            opacity: 1;
+        }
+        to {
+            transform: translateX(400px);
+            opacity: 0;
+        }
+    }
+`;
+document.head.appendChild(style);

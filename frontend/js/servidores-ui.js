@@ -372,11 +372,7 @@
             document.getElementById('serverModal').style.display = 'none';
         }
 
-        // Función para toggle del sidebar en móviles
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
+        
 
         // Cerrar sidebar al hacer clic fuera en móviles
         document.addEventListener('click', function(event) {
@@ -485,7 +481,7 @@ function saveChanges() {
         showNotification('Cambios guardados exitosamente ✅', 'success');
 
         // Actualizar la tarjeta del grid
-        updatedServer(updatedServer);
+        updateServerCard(updatedServer);
     }
 }
 

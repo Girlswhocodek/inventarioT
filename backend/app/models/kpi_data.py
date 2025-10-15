@@ -8,9 +8,9 @@ from app.models.base import Base
 class KpiEstado(str, enum.Enum):
     """
     Define los posibles estados de un registro KPI.
-    Equivalente a ENUM('completo', 'faltante-bd', 'faltante-cg') en MySQL.
+    Equivalente a ENUM('igual', 'faltante-bd', 'faltante-cg') en MySQL.
     """
-    COMPLETO = "completo"
+    IGUAL = "igual"
     FALTANTE_BD = "faltante-bd"
     FALTANTE_CG = "faltante-cg"
 

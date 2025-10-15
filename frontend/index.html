@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Inventario - Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 <link rel="stylesheet" href="static/css/styles.css">
 <link rel="stylesheet" href="static/css/components.css">
 </head>
@@ -68,6 +67,29 @@
                     </button>
                 </div>
                 
+             
+                <div class="filter-combo">
+                    <select class="combo-select" id="filtroSelect">
+                        <option value="">Todos los niveles</option>
+                        <option value="servidores">Servidores</option>
+                        <option value="sistemas_operativos">Sistemas Operativos</option>
+                        <option value="bases_datos">Bases de Datos</option>
+                        <option value="gestores">Gestores de Bases de Datos</option>
+                        <option value="aplicaciones">Aplicaciones</option>
+                        <option value="redes">Equipos de Red</option>
+                        <option value="almacenamiento">Sistemas de Almacenamiento</option>
+                        <option value="virtualizacion">Plataformas de Virtualización</option>
+                        <option value="seguridad">Equipos de Seguridad</option>
+                        <option value="backup">Sistemas de Backup</option>
+                        <option value="monitoreo">Herramientas de Monitoreo</option>
+                    </select>
+                    <div class="combo-icon">
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                </div>
+            
+
+                
             <div class="user-info" id="userInfoPanel">
                 <i class="fas fa-user-circle" style="font-size: 32px; color: #2c47c180; margin-right: 10px;"></i>
                 <div>
@@ -102,28 +124,7 @@
             
 
             <!-- Filter Section -->
-            <div class="filter-section">
-                <div class="filter-title">Filtrar por Nivel:</div>
-                <div class="filter-combo">
-                    <select class="combo-select" id="filtroSelect">
-                        <option value="">Todos los niveles</option>
-                        <option value="servidores">Servidores</option>
-                        <option value="sistemas_operativos">Sistemas Operativos</option>
-                        <option value="bases_datos">Bases de Datos</option>
-                        <option value="gestores">Gestores de Bases de Datos</option>
-                        <option value="aplicaciones">Aplicaciones</option>
-                        <option value="redes">Equipos de Red</option>
-                        <option value="almacenamiento">Sistemas de Almacenamiento</option>
-                        <option value="virtualizacion">Plataformas de Virtualización</option>
-                        <option value="seguridad">Equipos de Seguridad</option>
-                        <option value="backup">Sistemas de Backup</option>
-                        <option value="monitoreo">Herramientas de Monitoreo</option>
-                    </select>
-                    <div class="combo-icon">
-                        <i class="fas fa-chevron-down"></i>
-                    </div>
-                </div>
-            </div>
+            
 
             <!-- Results Section -->
             <div class="results">
@@ -191,18 +192,7 @@ function setupNavigation() {
     });
 }
 
-// Función para cargar datos de KPIs
-function loadKpisData() {
-    fetchWithAuth('/kpis')
-        .then(response => response.json())
-        .then(data => {
-            // Aquí actualizas la sección de KPIs con los datos
-            console.log('Datos KPIs:', data);
-            document.getElementById('kpis-content').innerHTML = 
-                `<h2>KPIs Cargados: ${data.length} indicadores</h2>`;
-        })
-        .catch(error => console.error('Error loading KPIs:', error));
-}
+
 
 // Inicializar navegación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', function() {
