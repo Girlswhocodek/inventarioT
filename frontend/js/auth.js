@@ -62,10 +62,8 @@ const configurarPanelUsuario = () => {
     
     // Toggle del panel
     
-        function toggleSidebar() {
-            const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('active');
-        }
+
+
     
         // Cerrar panel al hacer clic fuera
     document.addEventListener('click', function(e) {
@@ -104,12 +102,29 @@ const configurarLogin = () => {
         }
     });
 };
+  
 
 // Exportar funciones
 window.auth = {
     verificarAutenticacion,
     obtenerInfoUsuario,
     cerrarSesion,
+    toggleSidebar,
     configurarPanelUsuario,
     configurarLogin
 };
+function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+document.addEventListener('click', function(event) {
+    const sidebar = document.getElementById('sidebar');
+    const menuBtn = document.querySelector('.mobile-menu-btn');
+    
+    if (window.innerWidth <= 768 && 
+        !sidebar.contains(event.target) && 
+        !menuBtn.contains(event.target)) {
+        sidebar.classList.remove('active');
+    }
+});

@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inventario - Bases de Datos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/components.css">
+</head>
+<body>
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+        <!-- Sidebar -->
+        <div class="sidebar" id="sidebar">
+            <div class="logo">
+                <i class="fas fa-box-open"></i>
+                <h1>Inventario</h1>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/dashboard'">
+                <i class="fas fa-home"></i>
+                <span>Dashboard</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/servidores'">
+                <i class="fas fa-server"></i>
+                <span>Servidores</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
+                <i class="fab fa-windows"></i>
+                <span>Sistemas Operativos</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/bases-datos'">
+                <i class="fas fa-database"></i>
+                <span>Bases de Datos</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/gestion'">
+                <i class="fas fa-tools"></i>
+                <span>Gestión</span>
+            </div>
+            <div class="nav-item active" onclick="window.location.href='/kpis'">
+                <i class="fas fa-chart-line"></i>
+                <span>KPIs</span>
+            </div>
+            <div class="nav-item" onclick="window.location.href='/configuracion'">
+                <i class="fas fa-cog"></i>
+                <span>Configuración</span>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <div class="header">
+                <h1>🗄️ Gestión de Bases de Datos</h1>
+                <div class="user-info" id="userInfoPanel">
+                <i class="fas fa-user-circle" style="font-size: 32px; color: #2c47c180; margin-right: 10px;"></i>
+                <div>
+                    <div id="usernameDisplay">Administrador</div>
+                    <small>Administrador</small>
+                </div>
+              
+                    <!-- Panel desplegable de usuario -->
+                    <div class="user-panel" id="userPanel">
+                        <div class="user-panel-menu">
+                            <div class="user-panel-item">
+                                <i class="fas fa-user"></i>
+                                <span>Mi Perfil</span>
+                            </div>
+                            <div class="user-panel-item">
+                                <i class="fas fa-cog"></i>
+                                <span>Configuración</span>
+                            </div>
+                            <div class="user-panel-item">
+                                <i class="fas fa-bell"></i>
+                                <span>Notificaciones</span>
+                            </div>
+                            <div class="user-panel-divider"></div>
+                            <div class="user-panel-item" id="logoutButton">
+                                <i class="fas fa-sign-out-alt"></i>
+                                <span>Cerrar Sesión</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+           <div class="search-filter-section">
+            <div class="search-bar" style="width: 100%; max-width: 500px; margin-bottom: 20px;">
+                <i class="fas fa-search"></i>
+                <input type="text" id="searchInput" placeholder="Buscar bases de datos por nombre, motor, responsable, ID...">
+                <button class="btn-search" onclick="basesDatosManager.buscarBasesDatos()">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+
+            <div class="filters-row">
+                <div class="filter-combo">
+                    <select id="filterEstado" class="combo-select" onchange="basesDatosManager.aplicarFiltros()">
+                        <option value="">Todos los estados</option>
+                        <option value="online">🟢 En línea</option>
+                        <option value="offline">🔴 Fuera de línea</option>
+                        <option value="mantenimiento">🟡 En mantenimiento</option>
+                    </select>
+                    <i class="fas fa-chevron-down combo-icon"></i>
+                </div>
+
+                <div class="filter-combo">
+                    <select id="filterMotor" class="combo-select" onchange="basesDatosManager.aplicarFiltros()">
+                        <option value="">Todos los motores</option>
+                        <option value="Oracle">Oracle</option>
+                        <option value="SQL Server">SQL Server</option>
+                        <option value="MySQL">MySQL</option>
+                        <option value="PostgreSQL">PostgreSQL</option>
+                        <option value="MongoDB">MongoDB</option>
+                    </select>
+                    <i class="fas fa-chevron-down combo-icon"></i>
+                </div>
+
+              <button class="btn btn-secondary" onclick="resetFilters()">
+                        <i class="fas fa-redo"></i> Limpiar Filtros
+                </button>
+            </div>
+        </div>
+          <div class="stats-grid" id="statsGrid">
+            <!-- Las estadísticas se cargarán aquí -->
+        </div>
+
+            <div class="databases-grid" id="databasesGrid">
+                <!-- Las bases de datos se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Bases de Datos -->
+    <div id="databaseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Detalles de Base de Datos</h2>
+                <div class="modal-actions">
+                    <button class="btn-edit" onclick="toggleEditMode()">
+                        <i class="fas fa-edit"></i> Editar
+                    </button>
+                    <span class="close" onclick="closeModal()">&times;</span>
+                </div>
+            </div>
+            
+            <div class="tabs-nav">
+                <button class="tab-button active" onclick="openTab(event, 'info-general')">
+                    📋 Información General
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'objetos')">
+                    📊 Objetos
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'responsable')">
+                    👤 Responsable 
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'configuracion')">
+                    ⚙️ Configuración
+                </button>
+                <button class="tab-button" onclick="openTab(event, 'monitoreo')">
+                    📈 Monitoreo
+                </button>
+            </div>
+
+            <!-- Tabs específicos para bases de datos -->
+            <div id="info-general" class="tab-content active">
+                <h3>📋 Información General de la Base de Datos</h3>
+                <div class="detail-grid" id="databaseDetails">
+                    <!-- Información de la base de datos -->
+                </div>
+            </div>
+
+            <div id="objetos" class="tab-content">
+                <h3>📊 Objetos de la Base de Datos</h3>
+                <div id="objetosContent">
+                    <!-- Tablas, vistas, procedimientos, etc. -->
+                </div>
+            </div>
+
+            <div id="responsable" class="tab-content">
+                <h3>👤 Responsable y Permisos</h3>
+                <div id="responsableContent">
+                    <!-- Información del DBA y permisos -->
+                </div>
+            </div>
+
+            <div id="configuracion" class="tab-content">
+                <h3>⚙️ Configuración</h3>
+                <div id="configuracionContent">
+                    <!-- Configuración específica de la BD -->
+                </div>
+            </div>
+
+            <div id="monitoreo" class="tab-content">
+                <h3>📈 Estado y Monitoreo</h3>
+                <div id="monitoreoContent">
+                    <!-- Métricas y monitoreo -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="static/js/bases-datos.js"></script>
+    <script src="static/js/api.js"></script>
+    <script src="static/js/app.js"></script>
+    <script src="static/js/auth.js"></script>
+</body>
+</html>

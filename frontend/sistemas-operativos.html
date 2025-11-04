@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Sistemas Operativos</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="static/css/styles.css">
+    <link rel="stylesheet" href="static/css/components.css">
+    <link rel="stylesheet" href="static/css/sistemaoperativo.css">
+    
+    
+
+</head>
+<body>
+    <!-- Botón móvil -->
+    <button class="mobile-menu-btn" onclick="toggleSidebar()">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar">
+        <div class="logo">
+            <i class="fas fa-box-open"></i>
+            <h1>Inventario</h1>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/dashboard'">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/servidores'">
+            <i class="fas fa-server"></i>
+            <span>Servidores</span>
+        </div>
+        <div class="nav-item active" onclick="window.location.href='/sistemas-operativos'">
+            <i class="fab fa-windows"></i>
+            <span>Sistemas Operativos</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/bases-datos'">
+            <i class="fas fa-database"></i>
+            <span>Bases de Datos</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/gestion'">
+            <i class="fas fa-tools"></i>
+            <span>Gestión</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/kpis'">
+            <i class="fas fa-chart-line"></i>
+            <span>KPIs</span>
+        </div>
+        <div class="nav-item" onclick="window.location.href='/configuracion'">
+            <i class="fas fa-cog"></i>
+            <span>Configuración</span>
+        </div>
+    </div>
+  <!-- Main Content -->
+    <div class="main-content" id="mainContent">
+        <div class="header">
+            <h2><i class="fab fa-windows"></i> Sistemas Operativos</h2>
+            <button class="btn btn-primary" onclick="openModal()">
+                <i class="fas fa-plus"></i> Nuevo Sistema Operativo
+            </button>
+        </div>
+
+        <!-- Stats Cards -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon blue">
+                    <i class="fab fa-windows"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>24</h3>
+                    <p>Total Sistemas</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>20</h3>
+                    <p>Activos</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon orange">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>3</h3>
+                    <p>Por Vencer</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon red">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="stat-info">
+                    <h3>1</h3>
+                    <p>Vencidos</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters">
+            <div class="filter-group">
+                <label>Buscar</label>
+                <input type="text" placeholder="Buscar por nombre..." id="searchInput">
+            </div>
+            <div class="filter-group">
+                <label>Distribución</label>
+                <select id="filterDistribucion">
+                    <option value="">Todas</option>
+                    <option value="Windows Server">Windows Server</option>
+                    <option value="Linux">Linux</option>
+                    <option value="Unix">Unix</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Estado</label>
+                <select id="filterEstado">
+                    <option value="">Todos</option>
+                    <option value="activo">Activo</option>
+                    <option value="inactivo">Inactivo</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Arquitectura</label>
+                <select id="filterArquitectura">
+                    <option value="">Todas</option>
+                    <option value="x86">x86</option>
+                    <option value="x64">x64</option>
+                    <option value="ARM">ARM</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Distribución</th>
+                        <th>Versión</th>
+                        <th>Arquitectura</th>
+                        <th>Servidor</th>
+                        <th>Estado</th>
+                        <th>Vigencia</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    <tr>
+                        <td>Windows Server 2022</td>
+                        <td>Windows Server</td>
+                        <td>21H2</td>
+                        <td>x64</td>
+                        <td>SRV-PROD-01</td>
+                        <td><span class="badge activo">Activo</span></td>
+                        <td><span class="badge vigente">Vigente</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon edit" onclick="editSO(1)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteSO(1)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Ubuntu Server</td>
+                        <td>Linux</td>
+                        <td>22.04 LTS</td>
+                        <td>x64</td>
+                        <td>SRV-WEB-01</td>
+                        <td><span class="badge activo">Activo</span></td>
+                        <td><span class="badge vigente">Vigente</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon edit" onclick="editSO(2)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteSO(2)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Windows Server 2012 R2</td>
+                        <td>Windows Server</td>
+                        <td>R2</td>
+                        <td>x64</td>
+                        <td>SRV-OLD-01</td>
+                        <td><span class="badge inactivo">Inactivo</span></td>
+                        <td><span class="badge vencido">Vencido</span></td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon edit" onclick="editSO(3)">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteSO(3)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal" id="soModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Nuevo Sistema Operativo</h3>
+                <button class="close-btn" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="soForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre *</label>
+                        <input type="text" name="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Distribución *</label>
+                        <select name="distribucion" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="Windows Server">Windows Server</option>
+                            <option value="Linux">Linux</option>
+                            <option value="Unix">Unix</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Versión *</label>
+                        <input type="text" name="version" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Arquitectura *</label>
+                        <select name="arquitectura" required>
+                            <option value="">Seleccionar...</option>
+                            <option value="x86">x86</option>
+                            <option value="x64">x64</option>
+                            <option value="ARM">ARM</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo Usuario</label>
+                        <input type="text" name="tipo_usuario">
+                    </div>
+                    <div class="form-group">
+                        <label>Licencia</label>
+                        <input type="text" name="licencia">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Estado</label>
+                        <select name="estado">
+                            <option value="activo">Activo</option>
+                            <option value="inactivo">Inactivo</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha Vencimiento</label>
+                        <input type="date" name="fecha_vencimiento">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Servidor</label>
+                    <select name="servidor_id">
+                        <option value="">Seleccionar...</option>
+                        <option value="1">SRV-PROD-01</option>
+                        <option value="2">SRV-WEB-01</option>
+                        <option value="3">SRV-OLD-01</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">
+                    <i class="fas fa-save"></i> Guardar
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            sidebar.classList.toggle('active');
+        }
+
+        function openModal() {
+            document.getElementById('soModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('soModal').classList.remove('active');
+            document.getElementById('soForm').reset();
+        }
+
+        function editSO(id) {
+            openModal();
+            console.log('Editar SO:', id);
+        }
+
+        function deleteSO(id) {
+            if (confirm('¿Estás seguro de eliminar este sistema operativo?')) {
+                console.log('Eliminar SO:', id);
+            }
+        }
+
+        document.getElementById('soForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            console.log('Guardar SO');
+            closeModal();
+        });
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            console.log('Buscar:', e.target.value);
+        });
+
+        document.getElementById('soModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+
+    
+</body>
+</html>

@@ -1,5 +1,6 @@
 // kpi.js - Script para integrar el dashboard con el backend
 
+
 let allData = [];
 let filteredData = [];
 let currentPage = 1;

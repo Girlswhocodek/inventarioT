@@ -355,7 +355,7 @@
 
 .related-table th {
     background: linear-gradient(45deg, #667eea, #764ba2);
-    color: white;
+    color: rgb(243, 240, 240);
     padding: 15px;
     text-align: left;
     font-weight: 600;
@@ -829,6 +829,18 @@ tr:hover {
     align-items: center;
     gap: 10px;
 }
+.btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s;
+        }
 
 .btn-edit {
     padding: 8px 16px;
@@ -887,3 +899,4 @@ tr:hover {
         .notification.error {
             background-color: #dc3545;
         }
+       

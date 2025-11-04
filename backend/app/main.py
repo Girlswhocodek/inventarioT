@@ -406,7 +406,7 @@ app.mount("/js", StaticFiles(directory="../frontend/js"), name="js")
 app.include_router(auth.router, tags=["Authentication"])
 app.include_router(servidores.router, tags=["Servidores"])
 app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
-app.include_router(bases_datos.router, tags=["Bases de Datos"])
+
 app.include_router(gestores.router, tags=["Gestores"])
 app.include_router(busqueda.router, tags=["Búsqueda"])
 app.include_router(kpis.router, tags=["KPIs"])
@@ -438,6 +438,18 @@ async def kpis():
 @app.get("/servidores", include_in_schema=False)
 async def servidores_dashboard():
     return FileResponse(os.path.join(FRONTEND_DIR, "servidores.html"))
+
+@app.get("/bases-datos", include_in_schema=False)
+async def bases_datos_dashboard():
+    return FileResponse(os.path.join(FRONTEND_DIR, "bases-datos.html"))
+
+app.include_router(bases_datos.router, prefix="/api", tags=["Bases de Datos"])
+@app.get("/sistemas-operativos", include_in_schema=False)
+async def sistemas_operativos_dashboard():
+    return FileResponse(os.path.join(FRONTEND_DIR, "sistemas-operativos.html"))
+
+# Incluir el router de la API para sistemas operativos
+app.include_router(sistemas_operativos.router, prefix="/api", tags=["Sistemas Operativos"])
 
 @app.get("/api/servidores/{servidor_id}/sistemas-operativos")
 async def get_sistemas_operativos(servidor_id: int, token: str = Header(...)):
