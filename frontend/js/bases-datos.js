@@ -565,17 +565,6 @@ function toggleEditMode() {
     alert('Modo edición - Por implementar');
 }
 
-// Inicializar cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    // Verificar autenticación
-    const token = localStorage.getItem('access_token');
-    if (!token) {
-        window.location.href = '/login';
-        return;
-    }
-
-    window.basesDatosManager = new BasesDatosManager();
-});
 
 // Manejar clic fuera del modal para cerrarlo
 window.onclick = function(event) {
