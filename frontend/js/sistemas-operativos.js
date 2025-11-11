@@ -40,7 +40,7 @@ class SistemasOperativosManager {
 
     async cargarEstadisticas() {
         try {
-            const response = await this.fetchWithAuth('/api/sistemas-operativos/estadisticas/resumen');
+            const response = await window.api.fetchWithAuth('/api/sistemas-operativos/estadisticas/resumen');
             if (response.ok) {
                 const stats = await response.json();
                 this.renderizarEstadisticas(stats);
@@ -88,7 +88,7 @@ class SistemasOperativosManager {
 
     async cargarSistemasOperativos() {
         try {
-            const response = await this.fetchWithAuth('/api/sistemas-operativos');
+            const response = await window.api.fetchWithAuth('/api/sistemas-operativos');
             if (response.ok) {
                 this.sistemasOperativos = await response.json();
                 this.sistemasOperativosFiltrados = [...this.sistemasOperativos];
@@ -341,7 +341,7 @@ class SistemasOperativosManager {
 
     async mostrarDetalles(soId) {
         try {
-            const response = await this.fetchWithAuth(`/api/sistemas-operativos/${soId}`);
+            const response = await window.api.fetchWithAuth(`/api/sistemas-operativos/${soId}`);
             if (response.ok) {
                 const sistemaOperativo = await response.json();
                 this.mostrarModal(sistemaOperativo);
@@ -559,15 +559,6 @@ class SistemasOperativosManager {
         }
     }
 
-    fetchWithAuth(url, options = {}) {
-        const token = localStorage.getItem('access_token');
-        options.headers = {
-            ...options.headers,
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        };
-        return fetch(url, options);
-    }
 }
 
 // Funciones globales para el modal

@@ -899,4 +899,31 @@ tr:hover {
         .notification.error {
             background-color: #dc3545;
         }
-       
+       /* Header con layout flex */
+.header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    margin-bottom: 2rem;
+}
+
+.header-flex .header-left h2 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 1.5rem;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.user-panel-container {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
