@@ -1,4 +1,4 @@
-// static/js/sidebar.js - Compatible con tu auth.js
+
 class SidebarManager {
     static async load() {
         try {
@@ -15,12 +15,12 @@ class SidebarManager {
             
         } catch (error) {
             console.error('❌ Error cargando sidebar:', error);
-            // Fallback silencioso - no interfiere con tu función existente
+            // Fallback silencioso 
         }
     }
 
     static setupEventListeners() {
-        // Mobile menu - USA TU FUNCIÓN EXISTENTE
+        // Mobile menu
         const mobileBtn = document.getElementById('mobileMenuBtn');
         if (mobileBtn) {
             mobileBtn.addEventListener('click', (e) => {
@@ -45,7 +45,7 @@ class SidebarManager {
             });
         });
 
-        // Cerrar sidebar al hacer clic fuera (COMPATIBLE CON TU CÓDIGO)
+        // Cerrar sidebar al hacer clic fuera 
         this.setupClickOutside();
     }
 

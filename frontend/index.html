@@ -9,52 +9,6 @@
 <link rel="stylesheet" href="static/css/components.css">
 </head>
 <body>
-     <button class="mobile-menu-btn" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </button>
-    
-        <!-- Sidebar -->
-      <div class="sidebar" id="sidebar">
-    <div class="logo">
-        <i class="fas fa-box-open"></i>
-        <h1>Inventario</h1>
-    </div>
-    
-    <div class="nav-item active" onclick="window.location.href='/dashboard'">
-        <i class="fas fa-home"></i>
-        <span>Dashboard</span>
-    </div>
-  
-    <div class="nav-item" onclick="window.location.href='/servidores'">
-        <i class="fas fa-server"></i>
-        <span>Servidores</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/sistemas-operativos'">
-        <i class="fab fa-windows"></i>
-        <span>Sistemas Operativos</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/bases-datos'">
-        <i class="fas fa-database"></i>
-        <span>Bases de Datos</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/gestion'">
-        <i class="fas fa-tools"></i>
-        <span>Gestión</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/kpis'">
-        <i class="fas fa-chart-line"></i>
-        <span>KPIs</span>
-    </div>
-    
-    <div class="nav-item" onclick="window.location.href='/configuracion'">
-        <i class="fas fa-cog"></i>
-        <span>Configuración</span>
-    </div>
-</div>
 
         <!-- Main Content -->
         <div class="main-content">
@@ -97,30 +51,8 @@
                     <small>Administrador</small>
                 </div>
               
-                    <!-- Panel desplegable de usuario -->
-                    <div class="user-panel" id="userPanel">
-                        <div class="user-panel-menu">
-                            <div class="user-panel-item">
-                                <i class="fas fa-user"></i>
-                                <span>Mi Perfil</span>
-                            </div>
-                            <div class="user-panel-item">
-                                <i class="fas fa-cog"></i>
-                                <span>Configuración</span>
-                            </div>
-                            <div class="user-panel-item">
-                                <i class="fas fa-bell"></i>
-                                <span>Notificaciones</span>
-                            </div>
-                            <div class="user-panel-divider"></div>
-                            <div class="user-panel-item" id="logoutButton">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Cerrar Sesión</span>
-                            </div>
-                        </div>
-                    </div>
                 </div>
-            </div>
+        </div>
             
 
             <!-- Filter Section -->
@@ -140,176 +72,31 @@
         </div>
     </div>
     
-
-    <script>
-        // Verificar autenticación al cargar
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-            window.location.href = '/login';
-        }
-
-        // Función para hacer fetch con autenticación
-        const fetchWithAuth = (url, options = {}) => {
-            const token = localStorage.getItem('access_token');
-            options.headers = {
-                ...options.headers,
-                'Authorization': `Bearer ${token}`
-            };
-            return fetch(url, options);
-        };
-        
-    // NAVEGACIÓN ENTRE SECCIONES
-function setupNavigation() {
-    const navItems = document.querySelectorAll('.nav-item');
-    const contentSections = document.querySelectorAll('.content-section');
-    
-    navItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const targetId = this.getAttribute('data-target');
-            const targetSection = document.getElementById(targetId);
-            
-            if (targetSection) {
-                // Ocultar todas las secciones
-                contentSections.forEach(section => {
-                    section.classList.remove('active');
-                    section.style.display = 'none';
-                });
-                
-                // Mostrar solo la sección objetivo
-                targetSection.style.display = 'block';
-                targetSection.classList.add('active');
-                
-                // Actualizar menú activo
-                navItems.forEach(nav => nav.classList.remove('active'));
-                this.classList.add('active');
-                
-                // Si es la sección de KPIs, recargar datos
-                if (targetId === 'kpis') {
-                    loadKpisData();
-                }
-            }
-        });
-    });
-}
-
-
-
-// Inicializar navegación cuando el DOM esté listo
-document.addEventListener('DOMContentLoaded', function() {
-    setupNavigation();
-});
-        // Cargar KPIs al iniciar
-        fetchWithAuth('/kpis')
-            .then(response => {
-                if (response.status === 401) {
-                    localStorage.removeItem('access_token');
-                    window.location.href = '/login';
-                    return;
-                }
-                return response.json();
-            })
-            .then(data => {
-                // Aquí puedes actualizar tus KPIs si los tienes en el dashboard
-                console.log('Datos de KPIs:', data);
-            });
-
-        function buscar() {
-            const query = document.getElementById('searchInput').value;
-            const nivel = document.getElementById('filtroSelect').value;
-            
-            let url = '/buscar?q=' + encodeURIComponent(query);
-            if (nivel) url += '&nivel=' + nivel;
-
-            fetchWithAuth(url)
-                .then(response => {
-                    if (response.status === 401) {
-                        localStorage.removeItem('access_token');
-                        window.location.href = '/login';
-                        return;
-                    }
-                    return response.json();
-                })
-                .then(data => mostrarResultados(data))
-                .catch(error => {
-                    console.error('Error en la búsqueda:', error);
-                    document.getElementById('resultados').innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-exclamation-triangle" style="font-size: 48px; margin-bottom: 15px;"></i><p>Error al realizar la búsqueda</p></div>';
-                });
-        }
-
-        function mostrarResultados(data) {
-            const resultadosDiv = document.getElementById('resultados');
-            resultadosDiv.innerHTML = '';
-            
-            let totalResults = 0;
-
-            if (data.servidores && data.servidores.length > 0) {
-                totalResults += data.servidores.length;
-                resultadosDiv.innerHTML += '<h3 style="margin: 20px 0 10px; color: #4361ee;"><i class="fas fa-server"></i> Servidores</h3>' + crearTabla(data.servidores, ['nombre', 'ip', 'estado', 'responsable']);
-            }
-            if (data.sistemas_operativos && data.sistemas_operativos.length > 0) {
-                totalResults += data.sistemas_operativos.length;
-                resultadosDiv.innerHTML += '<h3 style="margin: 20px 0 10px; color: #4361ee;"><i class="fab fa-windows"></i> Sistemas Operativos</h3>' + crearTabla(data.sistemas_operativos, ['nombre', 'distribucion', 'version']);
-            }
-            if (data.bases_datos && data.bases_datos.length > 0) {
-                totalResults += data.bases_datos.length;
-                resultadosDiv.innerHTML += '<h3 style="margin: 20px 0 10px; color: #4361ee;"><i class="fas fa-database"></i> Bases de Datos</h3>' + crearTabla(data.bases_datos, ['nombre', 'motor', 'responsable', 'espacio_gb']);
-            }
-            if (data.gestores && data.gestores.length > 0) {
-                totalResults += data.gestores.length;
-                resultadosDiv.innerHTML += '<h3 style="margin: 20px 0 10px; color: #4361ee;"><i class="fas fa-tools"></i> Gestores</h3>' + crearTabla(data.gestores, ['nombre', 'tipo', 'version']);
-            }
-            
-            document.getElementById('resultCount').textContent = totalResults;
-            
-            if (totalResults === 0) {
-                resultadosDiv.innerHTML = '<div style="text-align: center; padding: 40px; color: #666;"><i class="fas fa-search" style="font-size: 48px; margin-bottom: 15px;"></i><p>No se encontraron resultados</p></div>';
-            }
-        }
-
-        function crearTabla(items, campos) {
-            let html = '<table><tr>';
-            campos.forEach(campo => html += '<th>' + campo.replace('_', ' ').toUpperCase() + '</th>');
-            html += '</tr>';
-            
-            items.forEach(item => {
-                html += '<tr>';
-                campos.forEach(campo => {
-                    let value = item[campo] || 'N/A';
-                    // Aplicar estilos especiales para campos de estado
-                    if (campo === 'estado') {
-                        let badgeClass = 'badge-success';
-                        if (value.toLowerCase().includes('inactivo') || value.toLowerCase().includes('mantenimiento')) {
-                            badgeClass = 'badge-warning';
-                        } else if (value.toLowerCase().includes('error') || value.toLowerCase().includes('caido')) {
-                            badgeClass = 'badge-danger';
-                        }
-                        html += '<td><span class="badge ' + badgeClass + '">' + value + '</span></td>';
-                    } else {
-                        html += '<td>' + value + '</td>';
-                    }
-                });
-                html += '</tr>';
-            });
-            
-            return html + '</table>';
-        }
-
-        // Permitir búsqueda con Enter
-        document.getElementById('searchInput').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                buscar();
-            }
-        });
-        
-        // Inicializar con búsqueda vacía al cargar
-        document.addEventListener('DOMContentLoaded', function() {
-            buscar();
-        });
-
-    </script>
+    <script src="static/js/auth.js"></script>
+    <script src="static/js/components/sidebar.js"></script>
+    <script src="static/js/components/user-panel.js"></script>
     <script src="static/js/api.js"></script>
     <script src="static/js/app.js"></script>
-    <script src="static/js/auth.js"></script>
+      <script>
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('🚀 dashboard.html: Inicializando...');
+          
+            await SidebarManager.load();
+            await UserPanelManager.load();
+            
+       
+            SidebarManager.setActivePage('dashboard');
+            
+          
+            if (window.app && window.app.inicializarApp) {
+                window.app.inicializarApp();
+            }
+            
+            console.log('🎉 Dashboard inicializado - La búsqueda funciona con Enter y botón');
+        });
+    </script>
+ 
+   
     
 </body>
 </html>
