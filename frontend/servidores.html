@@ -108,13 +108,10 @@
     <script src="static/js/servidores.js"></script> 
     <script>
     document.addEventListener('DOMContentLoaded', async function() {
-        // 1. Cargar sidebar
+        
         await SidebarManager.load();
         await UserPanelManager.load();
-        // 2. Marcar página activa
         SidebarManager.setActivePage('servidores');
-        
-        // 3. Tu lógica normal (toggleSidebar ya está disponible desde auth.js)
         if (typeof basesDatosManager !== 'undefined') {
             servidoresManager.init();
         }

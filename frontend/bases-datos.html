@@ -139,30 +139,14 @@
     <script src="static/js/app.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', async function() {
-        // 1. Cargar sidebar
         await SidebarManager.load();
         await UserPanelManager.load();
-        // 2. Marcar página activa
         SidebarManager.setActivePage('bases-datos');
-        
         if (typeof basesDatosManager !== 'undefined') {
             basesDatosManager.init();
         }
     });
-    document.addEventListener('DOMContentLoaded', async function() {
-    await SidebarManager.load();
-    await HeaderManager.load(
-        'Gestión de Bases de Datos', 
-        'fa-database',
-        false // sin botón
-    );
-    await UserPanelManager.load();
-    SidebarManager.setActivePage('bases-datos');
     
-    if (typeof basesDatosManager !== 'undefined') {
-        basesDatosManager.init();
-    }
-});
 </script>
     
 </body>

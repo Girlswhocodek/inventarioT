@@ -258,13 +258,9 @@
 
     <script>
          document.addEventListener('DOMContentLoaded', async function() {
-        // 1. Cargar sidebar
         await SidebarManager.load();
         await UserPanelManager.load();
-        // 2. Marcar página activa
         SidebarManager.setActivePage('sistemas-operativos');
-        
-        // 3. Tu lógica normal (toggleSidebar ya está disponible desde auth.js)
         if (typeof sistemasOperativosManager !== 'undefined') {
             sistemasOperativosManager.init();
         }
