@@ -533,7 +533,7 @@ resaltarBusqueda(texto) {
 
 // Funciones globales para el modal
 function closeModal() {
-    const modal = document.getElementById('databaseModal'); // Cambiado de 'baseDatosModal'
+    const modal = document.getElementById('databaseModal'); 
     if (modal) {
         modal.style.display = 'none';
     }
@@ -561,14 +561,14 @@ function openTab(evt, tabName) {
 }
 
 function toggleEditMode() {
-    // Implementar lógica de edición
+    // Implementar lógica de edición luego
     alert('Modo edición - Por implementar');
 }
 
 
 // Manejar clic fuera del modal para cerrarlo
 window.onclick = function(event) {
-    const modal = document.getElementById('databaseModal'); // Cambiado de 'baseDatosModal'
+    const modal = document.getElementById('databaseModal'); 
     if (event.target == modal) {
         closeModal();
     }
