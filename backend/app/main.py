@@ -24,6 +24,7 @@ from app.models.empleado import Empleado
 from app.models.usuario_bd import UsuarioBd
 from app.models.rol_bd import RolBd
 from app.models.usuario_rol import usuarios_roles as usuarios_roles_table
+from app.routes.extract import router as extract_router
 
 
 # Importar routers
@@ -410,6 +411,7 @@ app.include_router(sistemas_operativos.router, tags=["Sistemas Operativos"])
 app.include_router(gestores.router, tags=["Gestores"])
 app.include_router(busqueda.router, tags=["Búsqueda"])
 app.include_router(kpis.router, tags=["KPIs"])
+app.include_router(extract_router)
 
 # --- Rutas absolutas para archivos estáticos ---
 FRONTEND_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../../frontend"))

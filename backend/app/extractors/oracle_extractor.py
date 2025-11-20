@@ -1,8 +1,19 @@
-import cx_Oracle
+try:
+    import cx_Oracle  # type: ignore
+except ImportError:
+    cx_Oracle = None  # Permite cargar el archivo aunque no esté cx_Oracle instalado
+
 from .base_extractor import BaseExtractor
 
 class OracleExtractor(BaseExtractor):
     def __init__(self, host, user, password, port=1521, service="XE"):
+        if cx_Oracle is None:
+            raise RuntimeError(
+                "cx_Oracle no está instalado. Instálalo con:\n"
+                "pip install cx_Oracle\n"
+                "Además requiere Oracle Instant Client."
+            )
+
         self.dsn = cx_Oracle.makedsn(host, port, service_name=service)
         self.user = user
         self.password = password
